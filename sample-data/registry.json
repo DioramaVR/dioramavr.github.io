@@ -34,13 +34,13 @@
   "movedTo": null,
   "sets": [
     {
-      "id": "2.0",
-      "name": "Museum",
+      "id": "test",
+      "name": "Test wave",
       "status": "stable"
     },
     {
-      "id": "2.1",
-      "name": "Next set",
+      "id": "1",
+      "name": "Wave 1",
       "status": "coming"
     }
   ],
@@ -51,7 +51,7 @@
       "game": "Two Point Museum",
       "appid": 2185060,
       "status": "stable",
-      "set": "2.0",
+      "set": "test",
       "index": "https://dioramavr.app/tpm-vr/index.json"
     },
     {
@@ -60,7 +60,7 @@
       "game": "Death's Door",
       "appid": 894020,
       "status": "coming",
-      "set": "2.1",
+      "set": "1",
       "closedBeta": true
     },
     {
@@ -69,7 +69,7 @@
       "game": "Cataclismo",
       "appid": 1422440,
       "status": "coming",
-      "set": "2.1"
+      "set": "1"
     }
   ]
 }

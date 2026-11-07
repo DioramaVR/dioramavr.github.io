@@ -38,7 +38,7 @@ const card = (g: Game) => {
   <main id="content">
     <section id="games" class="wrap section" aria-labelledby="games-title" style="padding-top: 40px">
       <h2 id="games-title" class="section-title">Games</h2>
-      <p class="lede" style="margin-bottom: 44px">A curated set of mods, each one built for the diorama style: the game laid out on a table you look down on and reach into. New games arrive in sets.</p>
+      <p class="lede" style="margin-bottom: 44px">A curated collection of mods, each one built for the diorama style. New games arrive in waves.</p>
 
       {sections.map((s) => {
         const games = s.games.map(card);
@@ -108,7 +108,7 @@ const card = (g: Game) => {
           <li>
             <span class="n" aria-hidden="true">3</span>
             <h3>Put on the headset</h3>
-            <p>Load a save as usual. Your game appears as a diorama in front of you: reach in and play.</p>
+            <p>Load a save as usual and play your game as a diorama in front of you.</p>
           </li>
         </ol>
 
@@ -137,7 +137,7 @@ const card = (g: Game) => {
       <div class="patreon">
         <div>
           <h2 id="patreon-title">Support the project</h2>
-          <p>Patrons get testing builds of the next set every month, so you play the new games before anyone else. Every released mod stays free and open source.</p>
+          <p>Patrons get testing builds of the next wave every month, so you play the new games before anyone else. Every released mod stays free and open source.</p>
         </div>
         <a class="btn btn-primary btn-l flat" href={PATREON}>Join on Patreon</a>
       </div>

@@ -30,7 +30,7 @@ const outSets = load().sets.filter((s) => s.status === 'stable');
           <dl class="facts">
             <div><dt>Released</dt><dd>{fmtDate(latest.date)}</dd></div>
             <div><dt>Size</dt><dd>{fmtSize(latest.size)}</dd></div>
-            {outSets.length > 0 && <div><dt>Games</dt><dd>{outSets.map(setLabel).join(', ')}</dd></div>}
+            {outSets.length > 0 && <div><dt>Wave</dt><dd>{outSets.map(setLabel).join(', ')}</dd></div>}
             <div><dt>For</dt><dd>Windows 10 and 11</dd></div>
           </dl>
           <Hash value={latest.sha256} />
