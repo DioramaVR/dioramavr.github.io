@@ -3,6 +3,10 @@
   "name": "Two Point Museum VR",
   "game": "Two Point Museum",
   "appid": 2185060,
+  "owners": {
+    "developer": "Two Point Studios",
+    "publisher": "SEGA"
+  },
   "tagline": "Your museum as a living model on the table in front of you.",
   "description": "Two Point Museum VR puts your whole museum on a table in front of you, like a model you can pick up. Grab it to move it, pull your hands apart to zoom in on a single exhibit, and twist to turn it round. Guests wander the halls, staff get on with their jobs, and you build and run everything as usual.\n\nYour hand is the mouse: point the laser at the game's menus and click, pick exhibits up and put them down where you like. The game's menus float on a panel behind the table, or split into windows around it, and you can move them wherever suits you. Prefer a smaller view? Turntable shows a circle of the museum on a table that spins.",
   "requirements": [
@@ -226,10 +230,5 @@
   ],
   "mediaGaps": [
     "A real gameplay clip from the headset (building, picking up and placing exhibits)."
-  ],
-  "owners": {
-    "developer": "Two Point Studios",
-    "publisher": "SEGA"
-  },
-  "_sampleNote": "owners is added by the site's sample data until the tpm repo has it."
+  ]
 }
