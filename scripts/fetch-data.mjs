@@ -1,6 +1,6 @@
 // Fills data/ from the public repos before a build (see site-config/sources.json):
-//   data/registry.json
-//   data/games/<id>/index.json   (byte for byte: indexes are signed, never touch them)
+//   data/registry.json (+ .sig)  from registry/ in this repo
+//   data/games/<id>/index.json (+ .sig)  byte for byte: they're signed, never touch them
 //   data/games/<id>/game.json    (optional) and the media files it names
 //   data/credits.json            (optional until the installer repo publishes it)
 // Runs in CI only unless --force is given; locally the site builds from sample-data/.
@@ -26,7 +26,15 @@ async function get(url, { optional = false } = {}) {
   return Buffer.from(await res.arrayBuffer());
 }
 // A local path (relative to the repo) or a URL.
-const read = (src, opts) => /^https?:/.test(src) ? get(src, opts) : Promise.resolve(fs.readFileSync(path.join(root, src)));
+async function read(src, { optional = false } = {}) {
+  if (/^https?:/.test(src)) return get(src, { optional });
+  const f = path.join(root, src);
+  if (!fs.existsSync(f)) {
+    if (optional) return null;
+    throw new Error(`fetch-data: ${src} doesn't exist`);
+  }
+  return fs.readFileSync(f);
+}
 const save = (rel, bytes) => { const f = path.join(tmp, rel); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, bytes); };
 const safe = (rel) => { if (rel.includes('..') || path.isAbsolute(rel) || rel.includes('\\')) throw new Error(`unsafe path ${rel}`); return rel; };
 
@@ -34,6 +42,9 @@ if (!sources.registry) throw new Error('fetch-data: site-config/sources.json has
 const registryBytes = await read(sources.registry);
 const registry = JSON.parse(registryBytes.toString('utf8'));
 save('registry.json', registryBytes);
+// The signature is required; the build's signature check says so if it's missing.
+const registrySig = await read(sources.registry + '.sig', { optional: true });
+if (registrySig) save('registry.json.sig', registrySig);
 
 const creditsBytes = sources.credits && await read(sources.credits, { optional: true });
 if (creditsBytes) save('credits.json', creditsBytes);
@@ -45,7 +56,11 @@ for (const g of registry.games) {
     continue; // a coming game with no public repo yet: the page is built from the registry alone
   }
   const dir = `games/${g.id}`;
-  if (g.status !== 'coming') save(`${dir}/index.json`, await read(base + 'index.json'));
+  if (g.status !== 'coming') {
+    save(`${dir}/index.json`, await read(base + 'index.json'));
+    const sig = await read(base + 'index.json.sig', { optional: true });
+    if (sig) save(`${dir}/index.json.sig`, sig);
+  }
   const info = await read(base + 'game.json', { optional: true });
   if (!info) continue;
   save(`${dir}/game.json`, info);

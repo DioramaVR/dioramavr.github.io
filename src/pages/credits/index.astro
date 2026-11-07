@@ -6,18 +6,21 @@ import Credits from '../../components/Credits.astro';
 import { load } from '../../data/load';
 
 // The list comes from credits.json in the installer repo (it ships in the installer too).
-const { credits } = load();
+const { credits, creditsPage } = load();
 ---
 <Base title="Credits" description="The projects DioramaVR is built on, and how to support them.">
   <header slot="top" class="smoke-host">
     <Smoke calm="header" />
     <Header />
     <div class="wrap page-head">
-      <h1>Credits</h1>
-      <p class="lede">DioramaVR is made by <span class="scrire">scrıre</span>, on top of other people’s open-source work. If a mod makes you happy, these are the people to thank too.</p>
+      <h1>{creditsPage.title ?? 'Credits'}</h1>
+      {creditsPage.intro
+        ? <p class="lede">{creditsPage.intro}</p>
+        : <p class="lede">DioramaVR is made by <span class="scrire">scrıre</span>, on top of other people’s open-source work. If a mod makes you happy, these are the people to thank too.</p>}
     </div>
   </header>
   <main id="content" class="wrap" style="padding-bottom: 96px">
     {credits.length ? <Credits credits={credits} /> : <p class="lede">The full list is on its way.</p>}
+    {creditsPage.disclaimer && <p class="small" style="margin-top: 32px">{creditsPage.disclaimer}</p>}
   </main>
 </Base>

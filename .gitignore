@@ -4,5 +4,5 @@ design-kit/
 node_modules/
 dist/
 .astro/
-data/
-data.tmp/
+/data/
+/data.tmp/

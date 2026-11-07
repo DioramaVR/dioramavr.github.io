@@ -1,6 +1,6 @@
 {
   "_doc": "Where scripts/fetch-data.mjs gets the site's data at build time. Public URLs only: no tokens.",
-  "registry": null,
+  "registry": "registry/registry.json",
   "credits": "https://raw.githubusercontent.com/DioramaVR/dvr-installer-public/main/credits.json",
   "games": {
     "tpm-vr": "https://raw.githubusercontent.com/DioramaVR/tpm-vr-public/main/data/"
