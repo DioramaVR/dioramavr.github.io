@@ -27,10 +27,31 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  # Before the first registry is committed (dvr-installer's sign-registry does that),
+  # there is nothing to publish: the run ends green with a note and deploys nothing.
+  check:
     # Only main is ever published (release/X.Y.Z branches merge into main to go live),
     # even if someone runs this workflow by hand on another branch.
     if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.registry.outputs.ready }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          sparse-checkout: registry
+      - id: registry
+        run: |
+          if [ -f registry/registry.json ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No registry/registry.json on main yet, so nothing is deployed. sign-registry commits the first one."
+          fi
+
+  build:
+    needs: check
+    if: needs.check.outputs.ready == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
