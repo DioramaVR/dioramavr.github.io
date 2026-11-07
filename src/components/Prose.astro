@@ -1,0 +1,6 @@
+---
+// Plain text from the data, with the pen name shown as the styled "scrıre" (Castoro, dotless ı).
+interface Props { text: string }
+const parts = Astro.props.text.split(/(scr[iı]re)/);
+---
+{parts.map((p, i) => (i % 2 ? <span class="scrire">scrıre</span> : p))}

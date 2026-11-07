@@ -36,7 +36,7 @@ export interface RegistryGame {
 }
 export interface Registry {
   format: number;
-  app: { latest: string; url: string; message?: string; releases?: AppRelease[] };
+  app?: { latest: string; url: string; message?: string; releases?: AppRelease[] };   // absent until the first installer release
   announcements?: Announcement[];
   movedTo?: string | null;
   sets?: SetInfo[];
@@ -66,12 +66,13 @@ export interface GameInfo {
 }
 
 /** credits.json (installer repo root; the installer's About screen shows the same file). */
-export interface CreditsDoc { format?: number; title?: string; intro?: string; credits: Credit[]; disclaimer?: string }
+export interface CreditsDoc { format?: number; title?: string; intro?: string; credits: Credit[]; notices?: string; disclaimer?: string }
 
 /** A credit: in credits.json (site-wide) and in game.json (game-specific). */
 export interface Credit {
   name: string; for?: string; license?: string; url?: string;
   support?: { label: string; url: string }[]; highlight?: boolean;
+  notice?: string;   // where its licence notice is inside a download (not shown on the site)
 }
 
 /** Everything a page needs about one game. */
@@ -218,6 +219,7 @@ export function gamesBySet() {
 
 export function installer() {
   const { app } = load().registry;
+  if (!app) return { latestVersion: undefined, latest: undefined, releases: [] as AppRelease[], pageUrl: undefined };
   const releases = [...(app.releases ?? [])].sort((a, b) => cmpVersion(b.version, a.version));
   const latest = releases.find((r) => r.version === app.latest);
   return { latestVersion: app.latest, latest, releases, pageUrl: app.url };

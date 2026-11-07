@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import Smoke from '../../components/Smoke.astro';
 import Credits from '../../components/Credits.astro';
+import Prose from '../../components/Prose.astro';
 import { load } from '../../data/load';
 
 // The list comes from credits.json in the installer repo (it ships in the installer too).
@@ -15,12 +16,12 @@ const { credits, creditsPage } = load();
     <div class="wrap page-head">
       <h1>{creditsPage.title ?? 'Credits'}</h1>
       {creditsPage.intro
-        ? <p class="lede">{creditsPage.intro}</p>
+        ? <p class="lede"><Prose text={creditsPage.intro} /></p>
         : <p class="lede">DioramaVR is made by <span class="scrire">scrıre</span>, on top of other people’s open-source work. If a mod makes you happy, these are the people to thank too.</p>}
     </div>
   </header>
   <main id="content" class="wrap" style="padding-bottom: 96px">
     {credits.length ? <Credits credits={credits} /> : <p class="lede">The full list is on its way.</p>}
-    {creditsPage.disclaimer && <p class="small" style="margin-top: 32px">{creditsPage.disclaimer}</p>}
+    {creditsPage.notices && <p class="small" style="margin-top: 32px">{creditsPage.notices}</p>}
   </main>
 </Base>

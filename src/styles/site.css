@@ -409,7 +409,7 @@ code { font-family: var(--font-mono); }
 .coming-hero .herotitle { font-size: 80px; }
 .coming-hero .tagline { font-size: 21px; line-height: 1.5; color: rgba(245, 240, 232, .88); }
 .coming-hero .actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
-.coming-hero .stills { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; width: 100%; margin-top: 24px; }
+.coming-hero .stills { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 16px; width: 100%; margin-top: 24px; }
 .coming-hero .stills img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-s); }
 @media (max-width: 760px) {
   .coming-hero .inner { padding: 56px 16px 96px; }

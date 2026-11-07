@@ -43,8 +43,8 @@ const outSets = load().sets.filter((s) => s.status === 'stable');
     ) : (
       <section class="latest" aria-labelledby="latest-title">
         <div class="info">
-          <h2 id="latest-title">DioramaVR {latestVersion}</h2>
-          <p>The download link for this version isn’t listed yet. Check back soon.</p>
+          <h2 id="latest-title">{latestVersion ? `DioramaVR ${latestVersion}` : 'Coming soon'}</h2>
+          <p>{latestVersion ? 'The download link for this version isn’t listed yet. Check back soon.' : 'The installer isn’t out yet. It comes with the first public release; until then, testing builds are on the Patreon.'}</p>
         </div>
       </section>
     )}

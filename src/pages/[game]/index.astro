@@ -34,7 +34,7 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
         <p class="tagline">{game.closedBeta ? 'In closed beta for patrons.' : 'Coming soon.'} Free for everyone when it’s out.</p>
         <div class="actions">
           <a class="btn btn-primary btn-l" href={PATREON}>Get testing builds on Patreon</a>
-          <a class="btn btn-ghost btn-l" href="/#games">See what’s out now</a>
+          {load().games.some((g) => g.status !== 'coming') && <a class="btn btn-ghost btn-l" href="/#games">See what’s out now</a>}
         </div>
         <p class="small">For <a href={game.steamUrl}>{game.game} on Steam</a>, on a PC VR headset.</p>
         {game.closedBeta && (

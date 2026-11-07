@@ -2,7 +2,7 @@
 // Every page: head, announcement bar, header, footer, and the smoke script.
 import '../styles/site.css';
 import { currentAnnouncements, siteLink, usingSample, load } from '../data/load';
-import { PATREON } from '../site';
+import { PATREON, DISCLAIMER } from '../site';
 
 interface Props {
   title: string;              // page title (the site name is added)
@@ -17,7 +17,7 @@ const fullTitle = current === 'home' ? title : `${title} · DioramaVR`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 const announcement = currentAnnouncements()[0];
-const { games } = load();
+const { games, creditsPage } = load();
 const released = games.filter((g) => g.status !== 'coming');
 ---
 <!doctype html>
@@ -60,7 +60,7 @@ const released = games.filter((g) => g.status !== 'coming');
         <div class="brand">
           <span class="wordmark">DıoramaVR</span>
           <span class="small">Free and open-source VR mods by <span class="scrire">scrıre</span>.</span>
-          <span class="small">{disclaimer ?? 'Game names are trademarks of their owners. DioramaVR is an unofficial fan project, not affiliated with or endorsed by them.'}</span>
+          <span class="small">{disclaimer ?? creditsPage.disclaimer ?? DISCLAIMER}</span>
         </div>
         <nav aria-label="Footer">
           {current !== 'home' && <a href="/">Home</a>}

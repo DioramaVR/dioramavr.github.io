@@ -1,5 +1,7 @@
 // Site-wide settings that aren't release data.
 export const PATREON = 'https://www.patreon.com/cw/dioramavr';
+// The standard disclaimer (user's choice, 2026-11-07); credits.json carries the same text.
+export const DISCLAIMER = 'DioramaVR is an unofficial fan project. It isn’t affiliated with or endorsed by the makers of the games it supports. Game names and art belong to their owners.';
 export const PITCH = 'Free and open-source VR mods that turn your games into dioramas';
 // The one control every DioramaVR mod shares; the mod menu has everything else.
 export const MENU_CONTROL = {

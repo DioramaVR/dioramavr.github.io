@@ -24,11 +24,20 @@ const card = (g: Game) => {
       <div class="hero-inner">
         <h1 id="hero-title" class="bigword" aria-label="DioramaVR">DıoramaVR</h1>
         <p class="pitch">{PITCH}</p>
-        <a class="btn btn-primary btn-big" href={latest?.url ?? '/download/'}>
-          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>
-          Download the installer
-        </a>
-        <p class="small meta">Version {latestVersion} · Windows{latest && ` · ${fmtSize(latest.size)}`} · <a href="/download/">other versions</a></p>
+        {latestVersion ? (
+          <>
+            <a class="btn btn-primary btn-big" href={latest?.url ?? '/download/'}>
+              <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>
+              Download the installer
+            </a>
+            <p class="small meta">Version {latestVersion} · Windows{latest && ` · ${fmtSize(latest.size)}`} · <a href="/download/">other versions</a></p>
+          </>
+        ) : (
+          <>
+            <a class="btn btn-primary btn-big" href={PATREON}>Get the closed beta on Patreon</a>
+            <p class="small meta">The free installer comes with the first public release.</p>
+          </>
+        )}
         <p class="small phone-note">On your phone? This runs on your PC: bookmark it for later.</p>
         <p class="small" style="margin-top: 18px">by <span class="scrire">scrıre</span></p>
       </div>
