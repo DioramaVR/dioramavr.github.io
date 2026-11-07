@@ -1,0 +1,7 @@
+{
+  "_doc": "Where scripts/fetch-data.mjs gets the site's data at build time. Public URLs only: no tokens.",
+  "registry": null,
+  "games": {
+    "tpm-vr": "https://raw.githubusercontent.com/DioramaVR/tpm-vr-public/main/data/"
+  }
+}

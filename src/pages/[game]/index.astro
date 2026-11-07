@@ -1,0 +1,199 @@
+---
+// One page per game in the registry: /tpm-vr/, /deathsdoor-vr/, ...
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Smoke from '../../components/Smoke.astro';
+import { load, pickMedia, mediaUrl, fmtDate, fmtSize, setLabel, type Game } from '../../data/load';
+import { PATREON } from '../../site';
+
+export function getStaticPaths() {
+  return load().games.map((game) => ({ params: { game: game.id }, props: { game } }));
+}
+interface Props { game: Game }
+const { game } = Astro.props;
+const info = game.info;
+const { hero, turntable, gallery } = pickMedia(info);
+const media = (rel: string) => mediaUrl(game.id, rel);
+const paragraphs = (info?.description ?? '').split(/\n\s*\n/).filter(Boolean);
+const controls = info?.controls ?? [];
+const primary = controls.filter((c) => c.primary);
+const others = controls.filter((c) => !c.primary);
+const goodToKnow = [...(info?.needToKnow ?? []), ...(info?.requirements ?? [])];
+const releases = game.index?.releases ?? [];
+const channelLabel = { stable: 'Stable', beta: 'Public beta' } as const;
+const coming = game.status === 'coming';
+const crumbSet = game.setInfo ? (game.setInfo.status === 'coming' ? 'Next set' : setLabel(game.setInfo)) : undefined;
+const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.game}.`;
+---
+{coming ? (
+  <Base title={game.name} description={`${game.name} is coming to DioramaVR. Testing builds are on the Patreon.`} current="games" gameName={game.game} image={hero && media(hero.file)}>
+    <div slot="top" class="smoke-host coming-hero" style="flex-direction: column">
+      <Smoke calm="centre" />
+      <Header current="games" />
+      <main id="content" class="inner">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/#games">Games</a> <span aria-hidden="true">/</span> {crumbSet ?? game.name}</nav>
+        <span class="badge coming">Coming · in testing</span>
+        <h1 class="herotitle">{game.name}</h1>
+        <p class="tagline">{game.tagline ?? 'Not out yet.'} Testing builds go out on the Patreon each month; when it’s ready it will be free and open source for everyone, and the installer will pick it up.</p>
+        <div class="actions">
+          <a class="btn btn-primary btn-l" href={PATREON}>Get testing builds on Patreon</a>
+          <a class="btn btn-ghost btn-l" href="/#games">See what’s out now</a>
+        </div>
+        <p class="small">For {game.game} on Steam, on a PC VR headset.</p>
+        {(hero || gallery.length > 0) && (
+          <div class="stills">
+            {[hero, ...gallery].filter(Boolean).slice(0, 3).map((m) => <img src={media(m!.file)} alt={m!.alt} loading="lazy" width="640" height="360">)}
+          </div>
+        )}
+      </main>
+    </div>
+  </Base>
+) : (
+  <Base title={game.name} description={description} current="games" gameName={game.game} image={hero && media(hero.file)}>
+    <div slot="top" class="smoke-host">
+      <Smoke calm="left" />
+      <Header current="games" />
+      <section class="wrap game-hero" aria-labelledby="game-title">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/#games">Games</a> <span aria-hidden="true">/</span> {crumbSet && <>{crumbSet} <span aria-hidden="true">/</span> </>}{game.name}</nav>
+        <div class="split">
+          <div class="text">
+            <div class="badges">
+              {game.latestStable && <span class="badge stable">Stable {game.latestStable.version}</span>}
+              {game.latestBeta && <span class="badge beta">Public beta {game.latestBeta.version}</span>}
+            </div>
+            <h1 id="game-title" class="herotitle">{game.name}</h1>
+            {game.tagline && <p class="tagline">{game.tagline}</p>}
+            <div class="actions">
+              <a class="btn btn-primary btn-l" href="/download/">Install with the DioramaVR installer</a>
+            </div>
+            <p class="note">The installer downloads the latest version of the mod for you. Needs {game.game} on Steam and a PC VR headset.</p>
+          </div>
+          {(turntable || hero) && (
+            <figure>
+              <div class="turntable">
+                {turntable ? (
+                  <video src={media(turntable.file)} poster={turntable.poster && media(turntable.poster)} autoplay muted loop playsinline preload="metadata" aria-label={turntable.alt}></video>
+                ) : (
+                  <img src={media(hero!.file)} alt={hero!.alt}>
+                )}
+              </div>
+              {turntable && <figcaption>{turntable.alt}</figcaption>}
+            </figure>
+          )}
+        </div>
+      </section>
+    </div>
+
+    <main id="content">
+      {(paragraphs.length > 0 || hero) && (
+        <section class="wrap section" aria-labelledby="about-title" style="padding-top: 24px">
+          <div class="about">
+            <div class="prose">
+              <h2 id="about-title" class="section-title">What it does</h2>
+              {paragraphs.map((p) => <p>{p}</p>)}
+            </div>
+            {hero && (
+              <figure>
+                <img src={media(hero.file)} alt={hero.alt} loading="lazy" width="1920" height="1080">
+              </figure>
+            )}
+          </div>
+          {gallery.length > 0 && (
+            <div class="gallery">
+              {gallery.map((m) => (
+                <figure>
+                  <img src={media(m.file)} alt={m.alt} loading="lazy" width="960" height="540">
+                </figure>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      {controls.length > 0 && (
+        <section class="section-deep" aria-labelledby="controls-title">
+          <div class="wrap section">
+            {primary.length === 1 ? (
+              <div class="one-control">
+                <div class="text">
+                  <h2 id="controls-title">The one control to know</h2>
+                  <p>{primary[0].action}</p>
+                </div>
+                <div class="keys" role="img" aria-label={primary[0].input}>
+                  {primary[0].input.split(/\s*\+\s*/).map((k, i) => <>{i > 0 && <span class="plus" aria-hidden="true">+</span>}<span class="key">{k}</span></>)}
+                </div>
+              </div>
+            ) : (
+              <>
+                <h2 id="controls-title" class="section-title">Controls</h2>
+                <p class="lede">The VR menu has the full list, and it’s where you change settings and where the game’s windows sit.</p>
+                <dl class="controls">
+                  {(primary.length ? primary : controls).map((c) => <div><dt>{c.input}</dt><dd>{c.action}</dd></div>)}
+                </dl>
+              </>
+            )}
+            {primary.length > 0 && others.length > 0 && (
+              <details class="more-controls">
+                <summary>All controls</summary>
+                <dl class="controls">
+                  {others.map((c) => <div><dt>{c.input}</dt><dd>{c.action}</dd></div>)}
+                </dl>
+              </details>
+            )}
+          </div>
+        </section>
+      )}
+
+      {(goodToKnow.length > 0 || info?.firstLaunch) && (
+        <section class="wrap section" aria-labelledby="know-title" style="padding-bottom: 0">
+          <h2 id="know-title" class="section-title" style="margin-bottom: 24px">Good to know</h2>
+          <ul class="issues">
+            {info?.firstLaunch && <li class="warn"><b>First start.</b> {info.firstLaunch}</li>}
+            {goodToKnow.map((t) => <li>{t}</li>)}
+          </ul>
+        </section>
+      )}
+
+      <section class="wrap section" aria-labelledby="issues-title" style="padding-bottom: 0">
+        <h2 id="issues-title" class="section-title" style="margin-bottom: 24px">Known issues</h2>
+        {game.openIssues.length ? (
+          <ul class="issues">
+            {game.openIssues.map((i) => (
+              <li id={`issue-${i.id}`}><b>{i.title}.</b> {i.text}{i.since && <span class="since">Since {i.since}</span>}</li>
+            ))}
+          </ul>
+        ) : (
+          <p class="issues-none">None we know of. If something goes wrong, tell us on the Patreon.</p>
+        )}
+      </section>
+
+      <section class="wrap section" aria-labelledby="rel-title">
+        <h2 id="rel-title" class="section-title">Releases</h2>
+        <p class="lede">You don’t need these: the installer always downloads the latest one that matches your copy of the game. The zips are here if you’d rather install by hand.</p>
+        {releases.length ? (
+          <div class="table-scroll">
+            <table class="tbl" style="min-width: 900px">
+              <caption class="visually-hidden">Every release of {game.name}</caption>
+              <thead><tr><th scope="col">Version</th><th scope="col">Channel</th><th scope="col">Released</th><th scope="col">Tested game builds</th><th scope="col">Needs installer</th><th scope="col">SHA-256</th><th scope="col"><span class="visually-hidden">Download</span></th></tr></thead>
+              <tbody>
+                {releases.map((r) => (
+                  <tr>
+                    <td class="v">{r.version}{r.notes && <span class="notes">{r.notes}</span>}</td>
+                    <td class="nw"><span class:list={['badge', r.channel]}>{channelLabel[r.channel] ?? r.channel}</span></td>
+                    <td class="nw">{fmtDate(r.date)}</td>
+                    <td class="nw mono">{r.testedBuildIds?.join(', ') || '—'}</td>
+                    <td class="nw">{r.minAppVersion ? `${r.minAppVersion} or newer` : 'Any'}</td>
+                    <td><code>{r.sha256}</code></td>
+                    <td class="dl"><a href={r.url}>Zip · {fmtSize(r.size)}<span class="visually-hidden">, version {r.version}</span></a></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p class="small" style="margin-top: 16px">No releases yet.</p>
+        )}
+      </section>
+    </main>
+  </Base>
+)}

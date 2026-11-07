@@ -1,0 +1,79 @@
+---
+// Every page: head, announcement bar, header, footer, and the smoke script.
+import '../styles/site.css';
+import { currentAnnouncements, siteLink, usingSample, load } from '../data/load';
+import { PATREON, CREDITS } from '../site';
+
+interface Props {
+  title: string;              // page title (the site name is added)
+  description: string;
+  current?: 'home' | 'download' | 'games';
+  image?: string;             // social preview, a path on this site
+  smoke?: boolean;            // load the smoke script (pages with a smoke canvas)
+  gameName?: string;          // adds "<game> belongs to its publisher" to the footer
+}
+const { title, description, current, image = '/icons/diorama-vr-icon-rounded.png', smoke = true, gameName } = Astro.props;
+const fullTitle = current === 'home' ? title : `${title} · DioramaVR`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+const announcement = currentAnnouncements()[0];
+const released = load().games.filter((g) => g.status !== 'coming');
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{fullTitle}</title>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
+  <link rel="icon" type="image/png" href="/icons/icon.png">
+  <link rel="apple-touch-icon" href="/icons/diorama-vr-icon-rounded.png">
+  <meta name="theme-color" content="#181a25">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DioramaVR">
+  <meta property="og:title" content={fullTitle}>
+  <meta property="og:description" content={description}>
+  <meta property="og:url" content={canonical}>
+  <meta property="og:image" content={ogImage}>
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/fonts/tilt-warp-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to content</a>
+
+  {announcement && (
+    <aside class="announce" aria-label="Announcement">
+      <span><b>{announcement.title}</b> <span class="text">{announcement.text}</span></span>
+      {announcement.link && <a href={siteLink(announcement.link)}>Read more →</a>}
+    </aside>
+  )}
+
+  <slot name="top" />
+
+  <slot />
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="cols">
+        <div class="brand">
+          <span class="wordmark">DıoramaVR</span>
+          <span class="small">Free and open-source VR mods by <span class="scrire">scrıre</span>.{gameName && ` ${gameName} belongs to its publisher.`}</span>
+          {!gameName && <span class="small">Game names belong to their publishers.</span>}
+          {CREDITS.length > 0 && <span class="small">{CREDITS.join(' · ')}</span>}
+        </div>
+        <nav aria-label="Footer">
+          {current !== 'home' && <a href="/">Home</a>}
+          {current !== 'download' && <a href="/download/">Download</a>}
+          {released.filter((g) => Astro.url.pathname !== `/${g.id}/`).map((g) => <a href={`/${g.id}/`}>{g.name}</a>)}
+          <a href={PATREON}>Patreon</a>
+        </nav>
+      </div>
+      {usingSample && <p class="sample-note">Built from sample data: versions, dates and checksums are made up.</p>}
+    </div>
+  </footer>
+
+  {smoke && <script is:inline src="/brand/warp.js" defer></script>}
+</body>
+</html>
+

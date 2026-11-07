@@ -1,0 +1,36 @@
+{
+  "format": 1,
+  "_sample": "Sample data for building the site. Nothing here is released.",
+  "app": {
+    "latest": "0.2.0",
+    "url": "https://dioramavr.app/download/",
+    "releases": [
+      { "version": "0.2.0", "date": "2026-11-20",
+        "url": "https://github.com/DioramaVR/dvr-installer-public/releases/download/v0.2.0/DioramaVR-0.2.0.exe",
+        "size": 98765432, "sha256": "0000000000000000000000000000000000000000000000000000000000000000" },
+      { "version": "0.1.0", "date": "2026-11-10",
+        "url": "https://github.com/DioramaVR/dvr-installer-public/releases/download/v0.1.0/DioramaVR-0.1.0.exe",
+        "size": 97654321, "sha256": "1111111111111111111111111111111111111111111111111111111111111111" }
+    ]
+  },
+  "announcements": [
+    { "id": "welcome", "from": "2026-11-01", "until": "2027-01-31",
+      "title": "Two Point Museum VR is out.",
+      "text": "The first DioramaVR mod is here. Testing builds of the next games are on the Patreon.",
+      "link": "https://dioramavr.app/tpm-vr/" }
+  ],
+  "movedTo": null,
+  "sets": [
+    { "id": "2.0", "name": "Museum", "status": "released" },
+    { "id": "2.1", "name": "Next set", "status": "coming" }
+  ],
+  "games": [
+    { "id": "tpm-vr", "name": "Two Point Museum VR", "game": "Two Point Museum",
+      "appid": 2185060, "status": "released", "set": "2.0",
+      "index": "https://dioramavr.app/tpm-vr/index.json" },
+    { "id": "deathsdoor-vr", "name": "Death's Door VR", "game": "Death's Door",
+      "appid": 894020, "status": "coming", "set": "2.1" },
+    { "id": "cataclismo-vr", "name": "Cataclismo VR", "game": "Cataclismo",
+      "appid": 1422440, "status": "coming", "set": "2.1" }
+  ]
+}

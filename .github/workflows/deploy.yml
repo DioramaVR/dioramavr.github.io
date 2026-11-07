@@ -1,0 +1,44 @@
+# Builds the site and publishes it to GitHub Pages (Settings > Pages > Source: GitHub Actions).
+# The build fetches the registry and each game's data from the public repos first
+# (scripts/fetch-data.mjs, site-config/sources.json), so a release needs no edit here.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  # A game's publish Action (or the installer's) sends this after a release:
+  #   POST /repos/DioramaVR/dioramavr.github.io/dispatches  {"event_type": "data-updated"}
+  repository_dispatch:
+    types: [data-updated]
+  # Nightly backstop, and so dated announcements appear and expire on time.
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: withastro/action@v6.1.4
+        with:
+          node-version: "24"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5.0.1

@@ -1,0 +1,10 @@
+---
+// The brand smoke behind a section (public/brand/warp.js draws every canvas[data-warp]).
+// With WebGL off the canvas stays empty and the host's ink background shows; warp.js
+// draws one still frame for prefers-reduced-motion and pauses while the tab is hidden.
+// `calm` darkens where the text sits: centre (home hero), left (game hero), header (page header).
+interface Props { calm: 'centre' | 'left' | 'header' }
+const { calm } = Astro.props;
+---
+<canvas class="smoke" data-warp aria-hidden="true"></canvas>
+<div class:list={['smoke-calm', `calm-${calm}`]} aria-hidden="true"></div>
