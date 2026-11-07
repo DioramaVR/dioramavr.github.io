@@ -28,6 +28,9 @@ concurrency:
 
 jobs:
   build:
+    # Only main is ever published (release/X.Y.Z branches merge into main to go live),
+    # even if someone runs this workflow by hand on another branch.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
