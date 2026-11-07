@@ -60,7 +60,7 @@ const card = (g: Game) => {
                       <span class="title">{g.name}</span>
                       {g.tagline && <span class="tag">{g.tagline}</span>}
                       <span class="small">
-                        {g.latestStable ? `Stable ${g.latestStable.version}` : g.latestBeta ? `Public beta ${g.latestBeta.version}` : statusLabel[g.status]}
+                        {g.latestStable ? `Stable ${g.latestStable.version}` : g.latestBeta ? `Open beta ${g.latestBeta.version}` : statusLabel[g.status]}
                         {' · '}for {g.game} on Steam
                       </span>
                       <span class="go">See the mod →</span>
@@ -77,7 +77,7 @@ const card = (g: Game) => {
                     <span class="row">
                       <span>
                         <span class="title" style="display: block">{g.name}</span>
-                        <span class="small">Testing builds on the Patreon</span>
+                        <span class="small">{g.closedBeta ? 'In closed beta on Patreon' : 'Coming'}</span>
                       </span>
                       <span class="arrow" aria-hidden="true">→</span>
                     </span>

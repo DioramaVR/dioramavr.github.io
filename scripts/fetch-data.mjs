@@ -2,6 +2,7 @@
 //   data/registry.json
 //   data/games/<id>/index.json   (byte for byte: indexes are signed, never touch them)
 //   data/games/<id>/game.json    (optional) and the media files it names
+//   data/credits.json            (optional until the installer repo publishes it)
 // Runs in CI only unless --force is given; locally the site builds from sample-data/.
 // Any failure stops the build, so a broken fetch never publishes a half-empty site.
 import fs from 'node:fs';
@@ -33,6 +34,9 @@ if (!sources.registry) throw new Error('fetch-data: site-config/sources.json has
 const registryBytes = await read(sources.registry);
 const registry = JSON.parse(registryBytes.toString('utf8'));
 save('registry.json', registryBytes);
+
+const creditsBytes = sources.credits && await read(sources.credits, { optional: true });
+if (creditsBytes) save('credits.json', creditsBytes);
 
 for (const g of registry.games) {
   const base = sources.games[g.id];

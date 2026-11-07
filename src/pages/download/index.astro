@@ -6,7 +6,7 @@ import Hash from '../../components/Hash.astro';
 import { installer, load, fmtDate, fmtSize, setLabel } from '../../data/load';
 
 const { latest, latestVersion, releases } = installer();
-const outSets = load().sets.filter((s) => s.status === 'released');
+const outSets = load().sets.filter((s) => s.status === 'stable');
 ---
 <Base title="Download" description="Download the DioramaVR installer for Windows: one installer for every DioramaVR mod." current="download">
   <header slot="top" class="smoke-host">

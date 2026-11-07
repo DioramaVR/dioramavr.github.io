@@ -16,19 +16,65 @@
     "The game's camera tutorial asks you to tilt the camera: click the right stick. The table itself doesn't tilt, so lean or move your head to see it from another angle. While you're holding an exhibit, the same click changes placement mode instead."
   ],
   "controls": [
-    { "input": "Right trigger", "action": "Click. Hold on an exhibit to pick it up, let go to put it down", "primary": true },
-    { "input": "B", "action": "Right click" },
-    { "input": "Either grip", "action": "Move the table", "primary": true },
-    { "input": "Both grips", "action": "Scale and turn the table", "primary": true },
-    { "input": "Left stick left / right", "action": "Turn the table", "primary": true },
-    { "input": "Left stick up / down", "action": "Zoom", "primary": true },
-    { "input": "Right stick", "action": "Pan around the museum (in Turntable, move the circle)", "primary": true },
-    { "input": "Click the right stick", "action": "Tilt the game's camera (the table itself doesn't tilt). While holding an exhibit, change placement mode" },
-    { "input": "A, or right stick left / right", "action": "Rotate the exhibit you're holding" },
-    { "input": "Click the left stick", "action": "Open or close the VR menu", "primary": true },
-    { "input": "Both grips + both triggers", "action": "Open the VR menu, at any time" },
-    { "input": "X", "action": "Pause / play" },
-    { "input": "Y", "action": "Back / close a menu" }
+    {
+      "input": "Right trigger",
+      "action": "Click. Hold on an exhibit to pick it up, let go to put it down",
+      "primary": true
+    },
+    {
+      "input": "B",
+      "action": "Right click"
+    },
+    {
+      "input": "Either grip",
+      "action": "Move the table",
+      "primary": true
+    },
+    {
+      "input": "Both grips",
+      "action": "Scale and turn the table",
+      "primary": true
+    },
+    {
+      "input": "Left stick left / right",
+      "action": "Turn the table",
+      "primary": true
+    },
+    {
+      "input": "Left stick up / down",
+      "action": "Zoom",
+      "primary": true
+    },
+    {
+      "input": "Right stick",
+      "action": "Pan around the museum (in Turntable, move the circle)",
+      "primary": true
+    },
+    {
+      "input": "Click the right stick",
+      "action": "Tilt the game's camera (the table itself doesn't tilt). While holding an exhibit, change placement mode"
+    },
+    {
+      "input": "A, or right stick left / right",
+      "action": "Rotate the exhibit you're holding"
+    },
+    {
+      "input": "Click the left stick",
+      "action": "Open or close the VR menu",
+      "primary": true
+    },
+    {
+      "input": "Both grips + both triggers",
+      "action": "Open the VR menu, at any time"
+    },
+    {
+      "input": "X",
+      "action": "Pause / play"
+    },
+    {
+      "input": "Y",
+      "action": "Back / close a menu"
+    }
   ],
   "tutorial": [
     {
@@ -43,7 +89,10 @@
         "Right trigger",
         "B",
         "A, or right stick left / right",
-        { "input": "Click the right stick", "action": "Change placement mode while holding one" }
+        {
+          "input": "Click the right stick",
+          "action": "Change placement mode while holding one"
+        }
       ]
     },
     {
@@ -51,18 +100,33 @@
       "text": "Reach out and grab it.",
       "controls": [
         "Either grip",
-        { "input": "Both grips", "action": "Scale and turn it" },
-        { "input": "Left stick left / right", "action": "Turn it" },
+        {
+          "input": "Both grips",
+          "action": "Scale and turn it"
+        },
+        {
+          "input": "Left stick left / right",
+          "action": "Turn it"
+        },
         "Left stick up / down",
-        { "input": "Right stick", "action": "Pan around the museum" },
-        { "input": "Click the right stick", "action": "Tilt the game's camera (the table itself doesn't tilt)" }
+        {
+          "input": "Right stick",
+          "action": "Pan around the museum"
+        },
+        {
+          "input": "Click the right stick",
+          "action": "Tilt the game's camera (the table itself doesn't tilt)"
+        }
       ]
     },
     {
       "title": "Diorama or Turntable",
       "text": "Pick the view on the VR menu's View page. Diorama puts the whole museum on the table; Turntable shows a circle of it on a table that spins. The table sits at 0.75 m for seated play: change its height on the View page, or grip it and lift or lower it.",
       "controls": [
-        { "input": "Right stick", "action": "In Turntable, move the circle" }
+        {
+          "input": "Right stick",
+          "action": "In Turntable, move the circle"
+        }
       ]
     },
     {
@@ -91,14 +155,24 @@
     "launchArgs": "-force-d3d11",
     "steamAppIdFile": true,
     "loaderConfig": {
-      "Logging.Console": { "Enabled": false },
-      "Logging": { "UnityLogListening": false }
+      "Logging.Console": {
+        "Enabled": false
+      },
+      "Logging": {
+        "UnityLogListening": false
+      }
     }
   },
   "settings": {
     "shared": {
-      "leftHanded": { "section": "Controls", "key": "LeftHanded" },
-      "eyeResolution": { "section": "Dvr.Graphics", "key": "EyeResolution" }
+      "leftHanded": {
+        "section": "Controls",
+        "key": "LeftHanded"
+      },
+      "eyeResolution": {
+        "section": "Dvr.Graphics",
+        "key": "EyeResolution"
+      }
     },
     "options": [
       {
@@ -107,19 +181,55 @@
         "help": "Draw the game on the monitor too while you're in VR. Costs frame rate.",
         "type": "bool",
         "default": false,
-        "cfg": { "section": "Dvr.Graphics", "key": "DesktopView" }
+        "cfg": {
+          "section": "Dvr.Graphics",
+          "key": "DesktopView"
+        }
       }
     ]
   },
-  "testedBuildIds": ["26287332"],
+  "testedBuildIds": [
+    "26287332"
+  ],
   "media": [
-    { "file": "media/hero.jpg", "kind": "image", "role": "hero", "alt": "A museum hall on the table in VR: guests queue past a frozen mammoth and a dinosaur skeleton, with the game's menus floating at the edge of the table." },
-    { "file": "media/turntable-720.webm", "kind": "video", "role": "turntable", "alt": "A museum captured as a 3D model, turning slowly on a turntable.", "poster": "media/turntable-poster.jpg" },
-    { "file": "media/turntable-720.webm", "kind": "video", "role": "hover", "alt": "A museum captured as a 3D model, turning slowly." },
-    { "file": "media/headset-view.jpg", "kind": "image", "role": "gallery", "alt": "The same hall as seen in the headset, with the build toolbar and the laser pointer." },
-    { "file": "media/windows-around-table.jpg", "kind": "image", "role": "gallery", "alt": "The museum grounds on the table with the game's windows arranged around it and the camera keys floating on the left." }
+    {
+      "file": "media/hero.jpg",
+      "kind": "image",
+      "role": "hero",
+      "alt": "A museum hall on the table in VR: guests queue past a frozen mammoth and a dinosaur skeleton, with the game's menus floating at the edge of the table."
+    },
+    {
+      "file": "media/turntable-720.webm",
+      "kind": "video",
+      "role": "turntable",
+      "alt": "A museum captured as a 3D model, turning slowly on a turntable.",
+      "poster": "media/turntable-poster.jpg"
+    },
+    {
+      "file": "media/turntable-720.webm",
+      "kind": "video",
+      "role": "hover",
+      "alt": "A museum captured as a 3D model, turning slowly."
+    },
+    {
+      "file": "media/headset-view.jpg",
+      "kind": "image",
+      "role": "gallery",
+      "alt": "The same hall as seen in the headset, with the build toolbar and the laser pointer."
+    },
+    {
+      "file": "media/windows-around-table.jpg",
+      "kind": "image",
+      "role": "gallery",
+      "alt": "The museum grounds on the table with the game's windows arranged around it and the camera keys floating on the left."
+    }
   ],
   "mediaGaps": [
     "A real gameplay clip from the headset (building, picking up and placing exhibits)."
-  ]
+  ],
+  "owners": {
+    "developer": "Two Point Studios",
+    "publisher": "SEGA"
+  },
+  "_sampleNote": "owners is added by the site's sample data until the tpm repo has it."
 }

@@ -65,7 +65,7 @@ code { font-family: var(--font-mono); }
 .skip { position: absolute; left: 12px; top: -60px; z-index: 10; padding: 10px 16px; border-radius: var(--radius-s); background: var(--yellow); color: var(--ink); font-family: var(--font-display); text-decoration: none; }
 .skip:focus { top: 12px; color: var(--ink); }
 
-.wrap { max-width: calc(var(--max) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
+.wrap { width: 100%; max-width: calc(var(--max) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
 .section { padding-block: 88px; }
 .section-deep { background: var(--deep); border-block: 1px solid rgba(245, 240, 232, .08); }
 .section-title { font-size: 44px; margin-bottom: 12px; }
@@ -107,8 +107,8 @@ code { font-family: var(--font-mono); }
 .badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
 .badge.plain::before { content: none; }
 .badge.released, .badge.stable { color: var(--yellow); background: rgba(237, 218, 75, .1); border-color: rgba(237, 218, 75, .3); }
-.badge.beta, .badge.coming { color: var(--cream); background: rgba(24, 26, 37, .6); border-color: rgba(255, 63, 134, .45); }
-.badge.beta::before, .badge.coming::before { background: var(--pink-hi); }
+.badge.open-beta, .badge.coming { color: var(--cream); background: rgba(24, 26, 37, .6); border-color: rgba(255, 63, 134, .45); }
+.badge.open-beta::before, .badge.coming::before { background: var(--pink-hi); }
 
 .key {
   display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display);
@@ -338,7 +338,7 @@ code { font-family: var(--font-mono); }
 .tbl .dl a { font-family: var(--font-display); color: var(--pink-hi); text-decoration: none; display: inline-block; padding: 10px 0; }
 .tbl .dl a:hover { color: var(--cream); }
 .tbl .tag { font-family: var(--font-body); font-size: 14px; color: var(--yellow); }
-.tbl .notes { display: block; font-size: 14px; color: var(--text-3); white-space: normal; }
+.tbl .notes { display: block; font-family: var(--font-body); font-size: 14px; color: var(--text-3); white-space: normal; }
 .tbl .badge { padding: 0; border: 0; background: none; font-size: 14px; }
 
 /* ---------- Game page ---------- */
@@ -431,3 +431,28 @@ code { font-family: var(--font-mono); }
 /* The coming page's calm area is bigger than the home hero's: the text block is taller. */
 .coming-hero .calm-centre { background: radial-gradient(ellipse 60% 58% at 50% 55%, var(--ink) 36%, rgba(24, 26, 37, .84) 64%, rgba(24, 26, 37, .1) 100%); }
 @media (max-width: 760px) { .coming-hero .calm-centre { background: radial-gradient(ellipse 95% 60% at 50% 50%, var(--ink) 40%, rgba(24, 26, 37, .84) 70%, rgba(24, 26, 37, .2) 100%); } }
+
+/* ---------- Severity, closed beta ---------- */
+
+.issues .sev { display: inline-block; margin-right: 8px; padding: 1px 9px; border-radius: 999px; font-size: 12.5px; vertical-align: 2px; border: 1px solid var(--line-2); color: var(--text-2); }
+.issues li.annoying { background: rgba(247, 184, 1, .07); border-color: rgba(247, 184, 1, .22); }
+.issues li.annoying .sev, .issues li.annoying b { color: var(--amber); border-color: rgba(247, 184, 1, .35); }
+.issues li.blocking { background: rgba(200, 14, 88, .12); border-color: rgba(255, 63, 134, .5); }
+.issues li.blocking .sev { color: #fff; background: var(--pink); border-color: var(--pink); }
+.issues li.blocking b { color: var(--pink-hi); }
+.badge.closed { text-decoration: none; color: var(--text-2); }
+.badge.closed:hover { color: var(--pink-hi); border-color: rgba(255, 63, 134, .6); }
+
+/* ---------- Credits ---------- */
+
+.credits { list-style: none; margin: 32px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 16px; }
+.credits li { padding: 22px 24px; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+.credits li.highlight { grid-column: 1 / -1; background: var(--purple); border-color: rgba(255, 63, 134, .35); padding: 32px 36px; }
+.credits .head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.credits .name { font-family: var(--font-display); font-size: 22px; text-decoration: none; }
+.credits li.highlight .name { font-size: 32px; }
+.credits a.name:hover { color: var(--pink-hi); }
+.credits .license { font-family: var(--font-mono); font-size: 13px; color: var(--text-3); }
+.credits .for { color: var(--text-2); }
+.credits .support { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.credits .support .btn { padding: 8px 16px; font-size: 15px; }
