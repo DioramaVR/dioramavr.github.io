@@ -8,7 +8,7 @@
   "description": "Your museum as a living model on the table in front of you.",
   "releases": [
     {
-      "version": "1.0.1-beta",
+      "version": "0.1.1",
       "maturity": "open-beta",
       "date": "2026-11-25",
       "coreVersion": "0.1.0",
@@ -16,13 +16,21 @@
       "testedBuildIds": [
         "26287332"
       ],
-      "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/v1.0.1-beta/tpm-vr-1.0.1-beta.zip",
+      "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/v0.1.1/tpm-vr-0.1.1.zip",
       "sha256": "3333333333333333333333333333333333333333333333333333333333333333",
       "size": 31300000,
-      "notes": "Sample: an open beta."
+      "notes": "Sample: an open beta.",
+      "source": {
+        "commit": "0000003",
+        "coreRepo": "DioramaVR/dvr-unity-core",
+        "coreCommit": "0000001",
+        "coreFrom": "tag v0.1.0",
+        "actionsCommit": "0000002",
+        "builtAt": "2026-11-25T10:00:00Z"
+      }
     },
     {
-      "version": "1.0.0",
+      "version": "0.1.0",
       "maturity": "stable",
       "date": "2026-11-20",
       "coreVersion": "0.1.0",
@@ -30,10 +38,18 @@
       "testedBuildIds": [
         "26287332"
       ],
-      "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/v1.0.0/tpm-vr-1.0.0.zip",
+      "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/v0.1.0/tpm-vr-0.1.0.zip",
       "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
       "size": 31234567,
-      "notes": "Sample: the first release."
+      "notes": "Sample: the first release.",
+      "source": {
+        "commit": "0000004",
+        "coreRepo": "DioramaVR/dvr-unity-core",
+        "coreCommit": "0000001",
+        "coreFrom": "tag v0.1.0",
+        "actionsCommit": "0000002",
+        "builtAt": "2026-11-20T10:00:00Z"
+      }
     }
   ],
   "knownIssues": [
