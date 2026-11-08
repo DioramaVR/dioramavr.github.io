@@ -56,7 +56,7 @@ export interface GameIndex {
 }
 
 export interface Control { input: string; action: string; primary?: boolean }
-export interface Media { file: string; kind: 'image' | 'video'; alt: string; poster?: string; role?: string }
+export interface Media { file: string; kind: 'image' | 'video'; alt: string; poster?: string; role?: string; sources?: string[] }
 export interface GameInfo {
   id: string; name?: string; game?: string; tagline?: string; description?: string;
   requirements?: string[]; controls?: Control[]; media?: Media[];
@@ -246,7 +246,13 @@ export function pickMedia(info?: GameInfo) {
   const hero = shown.find((m) => role(m) === 'hero') ?? (hasRoles ? undefined : shown.find((m) => m.kind === 'image'));
   const turntable = shown.find((m) => role(m) === 'turntable') ?? (hasRoles ? undefined : shown.find((m) => m.kind === 'video'));
   const gallery = shown.filter((m) => m !== hero && m !== turntable && m.kind === 'image');
-  return { hero, turntable, gallery };
+  // The turntable's other encodings (data zip media[].sources, type from the extension: an MP4 for
+  // Safari). The browser plays the first it can, so MP4 goes first (Safari claims WebM but shows it differently).
+  const videoType = (f: string) => (/\.mp4$/i.test(f) ? 'video/mp4' : 'video/webm');
+  const turntableSources = !turntable ? [] : [turntable.file, ...(turntable.sources ?? [])]
+    .map((file) => ({ file, type: videoType(file) }))
+    .sort((a, b) => Number(b.type === 'video/mp4') - Number(a.type === 'video/mp4'));
+  return { hero, turntable, turntableSources, gallery };
 }
 
 /** URL of a game's media file on this site. */

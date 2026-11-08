@@ -4,8 +4,8 @@ import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import Smoke from '../../components/Smoke.astro';
 import Credits from '../../components/Credits.astro';
-import { load, pickMedia, mediaUrl, fmtDate, fmtSize, setLabel, maturityLabel, severityLabel, type Game } from '../../data/load';
-import { PATREON, MENU_CONTROL } from '../../site';
+import { load, installer, pickMedia, mediaUrl, fmtDate, fmtSize, setLabel, maturityLabel, severityLabel, type Game } from '../../data/load';
+import { PATREON, CONTROLS, INSTALLER_URL } from '../../site';
 
 export function getStaticPaths() {
   return load().games.map((game) => ({ params: { game: game.id }, props: { game } }));
@@ -13,7 +13,8 @@ export function getStaticPaths() {
 interface Props { game: Game }
 const { game } = Astro.props;
 const info = game.info;
-const { hero, turntable, gallery } = pickMedia(info);
+const { hero, turntable, turntableSources, gallery } = pickMedia(info);
+const { latestVersion } = installer();
 const media = (rel: string) => mediaUrl(game.id, rel);
 const goodToKnow = [...(info?.needToKnow ?? []), ...(info?.requirements ?? [])];
 const releases = game.index?.releases ?? [];
@@ -31,7 +32,7 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
         <span class="badge coming">{game.closedBeta ? 'In closed beta on Patreon' : 'Coming'}</span>
         <h1 class="herotitle">{game.name}</h1>
         {game.tagline && <p class="tagline">{game.tagline}</p>}
-        <p class="tagline">{game.closedBeta ? 'In closed beta for patrons.' : 'Coming soon.'} Free for everyone when it’s out.</p>
+        <p class="tagline">Free for everyone when it’s out.</p>
         <div class="actions">
           <a class="btn btn-primary btn-l" href={PATREON}>Get testing builds on Patreon</a>
           {load().games.some((g) => g.status !== 'coming') && <a class="btn btn-ghost btn-l" href="/#games">See what’s out now</a>}
@@ -69,15 +70,19 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
             <h1 id="game-title" class="herotitle">{game.name}</h1>
             {game.tagline && <p class="tagline">{game.tagline}</p>}
             <div class="actions">
-              <a class="btn btn-primary btn-l" href="/download/">Install with the DioramaVR installer</a>
+              {latestVersion
+                ? <a class="btn btn-primary btn-l" href={INSTALLER_URL}>Download the installer</a>
+                : <a class="btn btn-primary btn-l" href={PATREON}>Get it on Patreon</a>}
             </div>
-            <p class="note">The installer downloads the latest version of the mod for you. Needs <a href={game.steamUrl}>{game.game} on Steam</a> and a PC VR headset.</p>
+            <p class="note">Needs <a href={game.steamUrl}>{game.game} on Steam</a> and a PC VR headset.</p>
           </div>
           {(turntable || hero) && (
             <figure>
               <div class="turntable">
                 {turntable ? (
-                  <video src={media(turntable.file)} poster={turntable.poster && media(turntable.poster)} autoplay muted loop playsinline preload="metadata" aria-label={turntable.alt}></video>
+                  <video poster={turntable.poster && media(turntable.poster)} autoplay muted loop playsinline preload="metadata" aria-label={turntable.alt}>
+                    {turntableSources.map((s) => <source src={media(s.file)} type={s.type}>)}
+                  </video>
                 ) : (
                   <img src={media(hero!.file)} alt={hero!.alt}>
                 )}
@@ -104,11 +109,8 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
         <div class="wrap section">
           <div class="one-control">
             <div class="text">
-              <h2 id="controls-title">The one control to know</h2>
-              <p>{MENU_CONTROL.action}</p>
-            </div>
-            <div class="keys" role="img" aria-label={MENU_CONTROL.keys.join(' + ')}>
-              {MENU_CONTROL.keys.map((k, i) => <>{i > 0 && <span class="plus" aria-hidden="true">+</span>}<span class="key">{k}</span></>)}
+              <h2 id="controls-title">Controls</h2>
+              <p>{CONTROLS}</p>
             </div>
           </div>
         </div>
@@ -136,7 +138,7 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
             ))}
           </ul>
         ) : (
-          <p class="issues-none">None we know of. If something goes wrong, tell us on the Patreon.</p>
+          <p class="issues-none">None we know of.</p>
         )}
       </section>
 
@@ -149,7 +151,7 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
 
       <section class="wrap section" aria-labelledby="rel-title">
         <h2 id="rel-title" class="section-title">Releases</h2>
-        <p class="lede">You don’t need these: the installer always downloads the latest one that matches your copy of the game. The zips are here if you’d rather install by hand. <i>Core</i> is the version of the DioramaVR core each one was built on.</p>
+        <p class="lede">The installer picks the right one for you. The zips are for installing by hand.</p>
         {releases.length ? (
           <div class="table-scroll">
             <table class="tbl" style="min-width: 980px">
