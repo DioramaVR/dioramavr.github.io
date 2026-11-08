@@ -1,0 +1,67 @@
+[
+  {
+    "name": "UEVR",
+    "for": "VR for Unreal Engine games",
+    "license": "MIT",
+    "url": "https://github.com/praydog/UEVR",
+    "highlight": true,
+    "support": [
+      {
+        "label": "GitHub Sponsors",
+        "url": "https://github.com/sponsors/praydog"
+      },
+      {
+        "label": "Patreon",
+        "url": "https://www.patreon.com/praydog"
+      }
+    ]
+  },
+  {
+    "name": "BepInEx",
+    "for": "Mod loader for Unity games",
+    "license": "LGPL-2.1",
+    "url": "https://github.com/BepInEx/BepInEx"
+  },
+  {
+    "name": "OpenVR",
+    "for": "Talking to SteamVR",
+    "license": "BSD-3-Clause",
+    "url": "https://github.com/ValveSoftware/openvr"
+  },
+  {
+    "name": ".NET runtime",
+    "for": "Runs the installer's tools",
+    "license": "MIT",
+    "url": "https://github.com/dotnet/runtime"
+  },
+  {
+    "name": "Lucide",
+    "for": "Icons",
+    "license": "ISC",
+    "url": "https://lucide.dev",
+    "support": [
+      {
+        "label": "Open Collective",
+        "url": "https://opencollective.com/lucide-icons"
+      }
+    ]
+  },
+  {
+    "name": "Tilt Warp",
+    "for": "The wordmark and headings",
+    "license": "OFL-1.1",
+    "url": "https://fonts.google.com/specimen/Tilt+Warp"
+  },
+  {
+    "name": "Castoro",
+    "for": "The scrıre name",
+    "license": "OFL-1.1",
+    "url": "https://fonts.google.com/specimen/Castoro"
+  },
+  {
+    "name": "Atkinson Hyperlegible Next",
+    "for": "The installer's text",
+    "license": "OFL-1.1",
+    "url": "https://fonts.google.com/specimen/Atkinson+Hyperlegible+Next"
+  }
+]

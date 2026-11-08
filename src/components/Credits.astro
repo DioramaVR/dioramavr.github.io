@@ -1,0 +1,23 @@
+---
+// A list of credits (credits.json, or a game's own credits). Highlighted ones come first, larger.
+import type { Credit } from '../data/load';
+interface Props { credits: Credit[] }
+const credits = [...Astro.props.credits].sort((a, b) => Number(!!b.highlight) - Number(!!a.highlight));
+---
+<ul class="credits">
+  {credits.map((c) => (
+    <li class:list={{ highlight: c.highlight }}>
+      <div class="head">
+        {c.url ? <a class="name" href={c.url}>{c.name}</a> : <span class="name">{c.name}</span>}
+        {c.license && <span class="license">{c.license}</span>}
+      </div>
+      {c.for && <p class="for">{c.for}</p>}
+      {c.support && c.support.length > 0 && (
+        <p class="support">
+          <span class="visually-hidden">Support {c.name}: </span>
+          {c.support.map((s) => <a class:list={['btn', c.highlight ? 'btn-primary flat' : 'btn-ghost']} href={s.url}>{s.label}</a>)}
+        </p>
+      )}
+    </li>
+  ))}
+</ul>

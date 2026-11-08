@@ -1,0 +1,103 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Smoke from '../../components/Smoke.astro';
+import Hash from '../../components/Hash.astro';
+import { installer, load, fmtDate, fmtSize, setLabel } from '../../data/load';
+
+const { latest, latestVersion, releases } = installer();
+const outSets = load().sets.filter((s) => s.status === 'stable');
+---
+<Base title="Download" description="Download the DioramaVR installer for Windows: one installer for every DioramaVR mod." current="download">
+  <header slot="top" class="smoke-host">
+    <Smoke calm="header" />
+    <Header current="download" />
+    <div class="wrap page-head">
+      <h1>Download</h1>
+      <p class="lede">One installer for every DioramaVR mod. It downloads the latest version of each mod you pick and keeps them up to date. Windows only.</p>
+    </div>
+  </header>
+
+  <main id="content" class="wrap" style="padding-bottom: 96px">
+    {latest ? (
+      <section class="latest" aria-labelledby="latest-title">
+        <img src="/icons/diorama-vr-icon-rounded.png" alt="" width="120" height="120">
+        <div class="info">
+          <div class="title">
+            <h2 id="latest-title">DioramaVR {latest.version}</h2>
+            <span class="badge released">Latest</span>
+          </div>
+          <dl class="facts">
+            <div><dt>Released</dt><dd>{fmtDate(latest.date)}</dd></div>
+            <div><dt>Size</dt><dd>{fmtSize(latest.size)}</dd></div>
+            {outSets.length > 0 && <div><dt>Wave</dt><dd>{outSets.map(setLabel).join(', ')}</dd></div>}
+            <div><dt>For</dt><dd>Windows 10 and 11</dd></div>
+          </dl>
+          <Hash value={latest.sha256} />
+        </div>
+        <a class="btn btn-primary btn-l" href={latest.url}>
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>
+          Download .exe
+        </a>
+      </section>
+    ) : (
+      <section class="latest" aria-labelledby="latest-title">
+        <div class="info">
+          <h2 id="latest-title">{latestVersion ? `DioramaVR ${latestVersion}` : 'Coming soon'}</h2>
+          <p>{latestVersion ? 'The download link for this version isn’t listed yet. Check back soon.' : 'The installer isn’t out yet. It comes with the first public release; until then, testing builds are on the Patreon.'}</p>
+        </div>
+      </section>
+    )}
+
+    <section id="smartscreen" class="callout" aria-labelledby="ss-title">
+      <svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#edda4b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"></path><path d="M12 8v5"></path><path d="M12 16.5v.01"></path></svg>
+      <div class="body">
+        <h2 id="ss-title">Windows will probably warn you</h2>
+        <p>SmartScreen shows “Windows protected your PC” for new apps it hasn’t seen many people run. That’s expected. Choose <b>More info</b>, then <b>Run anyway</b>. If you want to be sure the file is ours, compare its SHA-256 with the one above first.</p>
+      </div>
+      <ol aria-label="Steps">
+        <li class="step">More info</li>
+        <li class="to" aria-hidden="true">→</li>
+        <li class="step">Run anyway</li>
+      </ol>
+    </section>
+
+    <section style="margin-top: 72px" aria-labelledby="notes-title">
+      <h2 id="notes-title" class="section-title">Installing and removing</h2>
+      <div class="two">
+        <div>
+          <h3>Install</h3>
+          <p>Run the .exe; there’s nothing to set up first. It finds the supported games in your Steam library; pick one and press Install, and it downloads the latest version of that mod. The first start of a modded game takes a few minutes with a blank window, so leave it be.</p>
+        </div>
+        <div>
+          <h3>Uninstall</h3>
+          <p>Uninstall a mod from inside the installer: it puts the game back to normal and never touches your saves. The installer itself is a single .exe that doesn’t install anything into Windows: when you’re done with it, just delete it. Its downloads are kept in <code>%LOCALAPPDATA%\DioramaVR</code>, which you can delete too.</p>
+        </div>
+      </div>
+    </section>
+
+    {releases.length > 0 && (
+      <section style="margin-top: 72px" aria-labelledby="older-title">
+        <h2 id="older-title" class="section-title">All versions</h2>
+        <p class="small">The installer tells you when a newer version is out, so you only need these to go back to an earlier one.</p>
+        <div class="table-scroll">
+          <table class="tbl">
+            <caption class="visually-hidden">Every DioramaVR installer version</caption>
+            <thead><tr><th scope="col">Version</th><th scope="col">Released</th><th scope="col">Size</th><th scope="col">SHA-256</th><th scope="col"><span class="visually-hidden">Download</span></th></tr></thead>
+            <tbody>
+              {releases.map((r) => (
+                <tr>
+                  <td class="v">{r.version} {r.version === latestVersion && <span class="tag">latest</span>}</td>
+                  <td class="nw">{fmtDate(r.date)}</td>
+                  <td class="nw">{fmtSize(r.size)}</td>
+                  <td><code>{r.sha256}</code></td>
+                  <td class="dl"><a href={r.url}>Download<span class="visually-hidden"> {r.version}</span></a></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )}
+  </main>
+</Base>
