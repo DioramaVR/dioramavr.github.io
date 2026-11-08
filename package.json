@@ -15,6 +15,6 @@
   },
   "dependencies": {
     "astro": "7.4.2",
-    "dvr-package": "github:DioramaVR/dvr-package#v0.1.0"
+    "dvr-package": "git+https://github.com/DioramaVR/dvr-package.git#v0.1.2"
   }
 }

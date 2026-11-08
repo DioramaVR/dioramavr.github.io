@@ -10,8 +10,11 @@ on:
   #   POST /repos/DioramaVR/dioramavr.github.io/dispatches  {"event_type": "game-release"}
   # (tpm-vr sends game-release for open-beta and stable only; never for closed-beta,
   # because this repo is public and so are its runs and their payloads.)
+  #   game-data: after a game's "Publish game data" run, payload {id, tag} (the new
+  #   data zip is in that game's signed index.json, data.url/sha256/size/date).
+  #   data-updated: after the registry changes (sign-registry, publish-installer).
   repository_dispatch:
-    types: [data-updated, game-release]
+    types: [data-updated, game-release, game-data]
   # Nightly backstop, and so dated announcements appear and expire on time.
   schedule:
     - cron: "17 3 * * *"
