@@ -88,5 +88,63 @@
       "text": "Turntable's Passthrough background needs a green-screen key in the headset, which Virtual Desktop doesn't support yet. Use Light or Dark for now.",
       "since": "0.1.0"
     }
-  ]
+  ],
+  "assets": {
+    "release": "assets-1",
+    "date": "2026-11-08",
+    "files": {
+      "hero.jpg": {
+        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/hero.jpg",
+        "sha256": "bc1131f2f8f349fdb6782b86aa61268a58eba1e3e2be50ddbde71707daea20f5",
+        "size": 280729
+      },
+      "turntable-720.webm": {
+        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/turntable-720.webm",
+        "sha256": "4ce051a30c77ac4b5b8845b09d4f86d04455fd88c3857eb8d5be1ffab2dd6cdc",
+        "size": 6430973
+      },
+      "turntable-poster.jpg": {
+        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/turntable-poster.jpg",
+        "sha256": "aa6ad72a8eea93a88d458defc9116f261f5472068478ad5b260a46f5474a1ea8",
+        "size": 81371
+      },
+      "headset-view.jpg": {
+        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/headset-view.jpg",
+        "sha256": "553570464406e08e0e8626ffe3c9bd4a51706b583a66dfc5f575cb6da4661699",
+        "size": 373387
+      },
+      "windows-around-table.jpg": {
+        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/windows-around-table.jpg",
+        "sha256": "7685c1db95bba856124f28287ad718bd75dd8621ffd1bc516cf8e15e82f3729a",
+        "size": 573121
+      }
+    },
+    "media": [
+      {
+        "file": "hero.jpg",
+        "kind": "image",
+        "role": "hero",
+        "alt": "A museum hall on the table in VR: guests queue past a frozen mammoth and a dinosaur skeleton, with the game's menus floating at the edge of the table."
+      },
+      {
+        "file": "turntable-720.webm",
+        "kind": "video",
+        "role": "turntable",
+        "alt": "A museum captured as a 3D model, turning slowly on a turntable.",
+        "poster": "turntable-poster.jpg"
+      },
+      {
+        "file": "headset-view.jpg",
+        "kind": "image",
+        "role": "gallery",
+        "alt": "The same hall as seen in the headset, with the build toolbar and the laser pointer."
+      },
+      {
+        "file": "windows-around-table.jpg",
+        "kind": "image",
+        "role": "gallery",
+        "alt": "The museum grounds on the table with the game's windows arranged around it and the camera keys floating on the left."
+      }
+    ]
+  }
 }

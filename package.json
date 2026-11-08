@@ -11,10 +11,10 @@
     "preview": "astro preview",
     "fetch-data": "node scripts/fetch-data.mjs",
     "build:site": "astro build",
-    "test": "node scripts/test-signatures.mjs"
+    "test": "node scripts/test-signatures.mjs && node scripts/test-assets.mjs"
   },
   "dependencies": {
     "astro": "7.4.2",
-    "dvr-package": "git+https://github.com/DioramaVR/dvr-package.git#v0.1.2"
+    "dvr-package": "git+https://github.com/DioramaVR/dvr-package.git#v0.1.3"
   }
 }
