@@ -1,0 +1,29 @@
+---
+// Site header and nav. Pages place it inside their smoke area so the smoke runs behind it.
+import { PATREON } from '../site';
+interface Props { current?: 'home' | 'download' | 'games' }
+const { current } = Astro.props;
+const links = [
+  { href: '/#games', label: 'Games', on: current === 'games' },
+  { href: '/#how', label: 'How it works', on: false },
+  { href: '/download/', label: 'Download', on: current === 'download', page: current === 'download' },
+];
+---
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="wordmark" href="/" aria-label="DioramaVR home">DıoramaVR</a>
+    <nav class="nav" aria-label="Main">
+      {links.map((l) => <a class:list={['navlink', { on: l.on }]} href={l.href} aria-current={l.page ? 'page' : undefined}>{l.label}</a>)}
+      <a class="btn btn-ghost" href={PATREON}>Patreon</a>
+    </nav>
+    <details class="menu">
+      <summary aria-label="Menu">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
+      </summary>
+      <nav class="nav" aria-label="Main (menu)">
+        {links.map((l) => <a class:list={['navlink', { on: l.on }]} href={l.href} aria-current={l.page ? 'page' : undefined}>{l.label}</a>)}
+        <a class="btn btn-ghost" href={PATREON}>Patreon</a>
+      </nav>
+    </details>
+  </div>
+</header>

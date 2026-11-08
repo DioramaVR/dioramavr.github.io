@@ -1,0 +1,5 @@
+# Signed files (registry.json, index.json and their .sig) must keep their exact bytes:
+# LF line ends on every checkout, whatever core.autocrlf says.
+*.json text eol=lf
+*.sig -text
+*.zip binary
