@@ -461,6 +461,9 @@ code { font-family: var(--font-mono); }
 
 .hero-still { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-l); }
 .hero-still + .gallery { margin-top: 24px; }
+/* A game's gallery: up to six pictures, two across (three rows), one across on phones. */
+.game-pictures .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 640px) { .game-pictures .gallery { grid-template-columns: minmax(0, 1fr); } }
 .closed-install { width: 100%; margin-top: 16px; padding: 28px 32px; border-radius: var(--radius-l); background: rgba(24, 26, 37, .85); border: 1.5px dashed rgba(245, 240, 232, .22); text-align: left; display: flex; flex-direction: column; gap: 8px; }
 .closed-install h2 { font-size: 24px; }
 .closed-install p { color: var(--text-2); }

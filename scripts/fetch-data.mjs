@@ -5,6 +5,8 @@
 //   data/games/<id>/index.json (+ .sig)    byte for byte: they're signed, never touch them
 //   data/games/<id>/<id>-data.zip          the data zip the index names (data.url), as it is;
 //                                          the build checks it against the index's sha256 and size
+//   data/games/<id>/media/<file>           each file of the index's assets list (assets.files), as it is;
+//                                          the build checks each against its sha256 and size
 // Coming games have no index: their pages are built from the registry alone.
 // Runs in CI only unless --force is given; locally the site builds from sample-data/.
 // Any failure stops the build, so a broken fetch never publishes a half-empty site.
@@ -59,11 +61,24 @@ for (const g of registry.games) {
   save(`${dir}/index.json`, indexBytes);
   const sig = await read(g.index + '.sig', { optional: true });
   if (sig) save(`${dir}/index.json.sig`, sig);
-  const data = JSON.parse(indexBytes.toString('utf8')).data;
-  if (!data) { console.log(`fetch-data: ${g.id}: its index has no data zip yet`); continue; }
-  const zip = await get(data.url);
-  save(`${dir}/${g.id}-data.zip`, zip);
-  console.log(`fetch-data: ${g.id}: data zip of ${data.date}, ${(zip.length / 1048576).toFixed(1)} MB`);
+  const { data, assets } = JSON.parse(indexBytes.toString('utf8'));
+  if (!data) console.log(`fetch-data: ${g.id}: its index has no data zip yet`);
+  else {
+    const zip = await get(data.url);
+    save(`${dir}/${g.id}-data.zip`, zip);
+    console.log(`fetch-data: ${g.id}: data zip of ${data.date}, ${(zip.length / 1048576).toFixed(1)} MB`);
+  }
+  if (assets) {
+    let total = 0;
+    for (const [name, f] of Object.entries(assets.files)) {
+      // Flat names only (the build checks them again), so nothing lands outside the folder.
+      if (!/^[a-z0-9][a-z0-9._-]*$/.test(name)) throw new Error(`fetch-data: ${g.id}: asset name "${name}"`);
+      const bytes = await get(f.url);
+      save(`${dir}/media/${name}`, bytes);
+      total += bytes.length;
+    }
+    console.log(`fetch-data: ${g.id}: assets ${assets.release} of ${assets.date}, ${Object.keys(assets.files).length} files, ${(total / 1048576).toFixed(1)} MB`);
+  }
 }
 
 fs.rmSync(out, { recursive: true, force: true });

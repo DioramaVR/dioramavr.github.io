@@ -95,11 +95,11 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
 
     <main id="content">
       {(hero || gallery.length > 0) && (
-        <section class="wrap section" aria-label="Pictures" style="padding-top: 24px">
+        <section class="wrap section game-pictures" aria-label="Pictures" style="padding-top: 24px">
           {hero && <img class="hero-still" src={media(hero.file)} alt={hero.alt} loading="lazy" width="1920" height="1080">}
           {gallery.length > 0 && (
             <div class="gallery">
-              {gallery.map((m) => <img src={media(m.file)} alt={m.alt} loading="lazy" width="960" height="540">)}
+              {gallery.slice(0, 6).map((m) => <img src={media(m.file)} alt={m.alt} loading="lazy" width="960" height="540">)}
             </div>
           )}
         </section>

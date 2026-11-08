@@ -6,10 +6,15 @@
 //   games/<id>/<id>-data.zip          the game's data zip (dvr-package SPEC section 11): its line, text,
 //                                     known issues, credits and media; checked against the index's data
 //                                     sha256 and size, read in memory, never unpacked to disk
+//   games/<id>/media/<file>           the game's pictures and videos when its index has an assets list
+//                                     (dvr-package SPEC section 12; from dvr-game-assets): each file
+//                                     downloaded on its own and checked against the index's sha256 and size.
+//                                     The assets list wins over the data zip's media.
 //   games/<id>/game.json + media/*    older data from before the data zip (only when the index has no data)
 //   credits.json                      the project's credits (from the installer repo; optional)
 // In CI, scripts/fetch-data.mjs fills `data/` from the public repos before the build.
 // Formats are owned by the installer repo; this file only reads them, never rewrites them.
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import dvrPackage from 'dvr-package';   // the formats' JSON Schemas (github.com/DioramaVR/dvr-package)
@@ -56,6 +61,13 @@ export interface GameIndex {
   format: number; id: string; name: string; game: string; appid: number; description?: string;
   releases: Release[]; knownIssues?: KnownIssue[];
   data?: { url: string; sha256: string; size: number; date: string };   // the game's data zip
+  assets?: Assets;   // the game's media, file by file (wins over the data zip's media)
+}
+/** index.json's assets list (dvr-package SPEC section 12): media.json's entries plus each file's url, sha256 and size. */
+export interface Assets {
+  release: string; date: string;
+  files: Record<string, { url: string; sha256: string; size: number }>;
+  media: Media[];   // file names are flat ("hero.jpg"), unlike the data zip's "media/hero.jpg"
 }
 /** data.json in a game's data zip. */
 interface GameData {
@@ -136,14 +148,41 @@ export const rawIndex = (id: string) => fs.readFileSync(file('games', id, 'index
 /** A signature file's exact bytes, or undefined when there is none (sample data is unsigned). */
 export const rawSig = (...rel: string[]) => { const f = file(...rel); return fs.existsSync(f) ? fs.readFileSync(f) : undefined; };
 
-/** Each game's data zip files (name -> bytes), once read and checked. */
-const zipFiles = new Map<string, Map<string, Buffer>>();
-/** A media file a game's data names ("media/<file>"), as bytes: from its data zip, or (older data) from disk. */
+/** Each game's media files ("media/<file>" -> bytes), once read and checked: from its assets list or its data zip. */
+const mediaFiles = new Map<string, Map<string, Buffer>>();
+/** A media file a game's data names ("media/<file>"), as bytes: checked assets, the data zip, or (older data) from disk. */
 export function mediaBytes(id: string, rel: string): Buffer {
   load();
-  const files = zipFiles.get(id);
-  if (files) return files.get(rel) ?? fail(`${id}'s data zip has no ${rel}`);
+  const files = mediaFiles.get(id);
+  if (files) return files.get(rel) ?? fail(`${id} has no media file ${rel}`);
   return fs.readFileSync(file('games', id, rel));
+}
+
+const ASSET_NAME = /^[a-z0-9][a-z0-9._-]*$/;
+/** Reads every file of a game's assets list from games/<id>/media/ and checks it against the index
+ *  (whose signature is checked too): the same size and SHA-256, or the build stops. */
+function readAssets(id: string, dir: string, assets: Assets): { media: Media[]; files: Map<string, Buffer> } {
+  const named = new Set<string>();
+  for (const m of assets.media) for (const f of [m.file, m.poster, ...(m.sources ?? [])]) if (f) named.add(f);
+  const listed = Object.keys(assets.files);
+  for (const f of named) if (!assets.files[f]) fail(`${id}'s assets list uses ${f} but has no url, sha256 and size for it`);
+  for (const f of listed) if (!named.has(f)) fail(`${id}'s assets list has ${f}, which no media entry uses`);
+  const files = new Map<string, Buffer>();
+  for (const name of listed) {
+    if (!ASSET_NAME.test(name)) fail(`${id}'s assets list has a file name "${name}" outside [a-z0-9._-]`);
+    const want = assets.files[name];
+    const p = path.join(dir, 'media', name);
+    if (!fs.existsSync(p)) fail(`${id}'s assets list names ${name}, but ${path.relative(root, p)} isn't there (did fetch-data run?)`);
+    const bytes = fs.readFileSync(p);
+    if (bytes.length !== want.size) fail(`${id}'s ${name} is ${bytes.length} bytes, not the ${want.size} its index lists`);
+    const sha = crypto.createHash('sha256').update(bytes).digest('hex');
+    if (sha !== want.sha256.toLowerCase()) fail(`${id}'s ${name} has SHA-256 ${sha}, not the ${want.sha256.toLowerCase()} its index lists`);
+    files.set(`media/${name}`, bytes);
+  }
+  // The pages use "media/<file>" paths, as in the data zip.
+  const rel = (f?: string) => f && `media/${f}`;
+  const media = assets.media.map((m) => ({ ...m, file: rel(m.file)!, poster: rel(m.poster), sources: m.sources?.map((s) => rel(s)!) }));
+  return { media, files };
 }
 
 const KNOWN_FORMAT = 1;
@@ -191,7 +230,7 @@ export function load() {
       let read: { data: GameData; files: Map<string, Buffer> };
       try { read = dvrPackage.dataZip.read(zip, { sha256: index.data.sha256, size: index.data.size, id: g.id }); }
       catch (e) { return fail(`${g.id}'s data zip: ${(e as Error).message}`); }
-      zipFiles.set(g.id, read.files);
+      mediaFiles.set(g.id, read.files);
       const d = read.data;
       info = { id: g.id, tagline: d.line, firstLaunch: d.firstLaunch, needToKnow: d.needToKnow, credits: d.credits, owners: d.owners, media: d.media };
       if (d.knownIssues) knownIssues = d.knownIssues;
@@ -200,8 +239,14 @@ export function load() {
       if (fs.existsSync(path.join(dir, 'known-issues.json'))) readChecked(path.join(dir, 'known-issues.json'), 'known-issues');
       for (const m of info.media ?? []) {
         if (m.file.includes('..') || path.isAbsolute(m.file)) fail(`${g.id}/game.json media path "${m.file}"`);
-        if (!fs.existsSync(path.join(dir, m.file))) fail(`${g.id}/game.json names ${m.file}, which isn't there`);
+        if (!index?.assets && !fs.existsSync(path.join(dir, m.file))) fail(`${g.id}/game.json names ${m.file}, which isn't there`);
       }
+    }
+    if (index?.assets) {
+      // The assets list wins over the data zip's (or game.json's) media; the text stays where it is.
+      const a = readAssets(g.id, dir, index.assets);
+      mediaFiles.set(g.id, a.files);
+      info = { ...(info ?? { id: g.id }), media: a.media };
     }
 
     const releases = (index?.releases ?? []).map((r) => ({ ...r, maturity: maturity(r, g.id) })).sort(byNewest);

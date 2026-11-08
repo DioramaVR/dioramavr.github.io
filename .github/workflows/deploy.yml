@@ -11,7 +11,9 @@ on:
   # (tpm-vr sends game-release for open-beta and stable only; never for closed-beta,
   # because this repo is public and so are its runs and their payloads.)
   #   game-data: after a game's "Publish game data" run, payload {id, tag} (the new
-  #   data zip is in that game's signed index.json, data.url/sha256/size/date).
+  #   data zip is in that game's signed index.json, data.url/sha256/size/date); also
+  #   after "Publish assets" in dvr-game-assets (the media list is in index.json: assets).
+  #   Both also call workflow_dispatch, which is what reliably starts this.
   #   data-updated: after the registry changes (sign-registry, publish-installer).
   repository_dispatch:
     types: [data-updated, game-release, game-data]
