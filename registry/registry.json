@@ -1,0 +1,43 @@
+{
+  "format": 1,
+  "waves": [
+    {
+      "id": "test",
+      "name": "Test wave",
+      "status": "open-beta"
+    },
+    {
+      "id": "1",
+      "name": "Wave 1",
+      "status": "coming"
+    }
+  ],
+  "games": [
+    {
+      "id": "tpm-vr",
+      "name": "Two Point Museum VR",
+      "game": "Two Point Museum",
+      "appid": 2185060,
+      "status": "open-beta",
+      "closedBeta": true,
+      "wave": "test",
+      "index": "https://raw.githubusercontent.com/DioramaVR/tpm-vr-public/main/data/index.json"
+    },
+    {
+      "id": "deathsdoor-vr",
+      "name": "Death's Door VR",
+      "game": "Death's Door",
+      "appid": 894020,
+      "status": "coming",
+      "wave": "1"
+    },
+    {
+      "id": "cataclismo-vr",
+      "name": "Cataclismo VR",
+      "game": "Cataclismo",
+      "appid": 1422440,
+      "status": "coming",
+      "wave": "1"
+    }
+  ]
+}
