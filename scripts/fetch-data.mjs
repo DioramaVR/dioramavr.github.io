@@ -1,8 +1,11 @@
-// Fills data/ from the public repos before a build (see site-config/sources.json):
-//   data/registry.json (+ .sig)  from registry/ in this repo
-//   data/games/<id>/index.json (+ .sig)  byte for byte: they're signed, never touch them
-//   data/games/<id>/game.json    (optional) and the media files it names
-//   data/credits.json            (optional until the installer repo publishes it)
+// Fills data/ before a build (see site-config/sources.json):
+//   data/registry.json (+ .sig)            from registry/ in this repo
+//   data/credits.json                      (optional until the installer repo publishes it)
+//   for each open-beta or stable game, from the index URL the registry gives it:
+//   data/games/<id>/index.json (+ .sig)    byte for byte: they're signed, never touch them
+//   data/games/<id>/<id>-data.zip          the data zip the index names (data.url), as it is;
+//                                          the build checks it against the index's sha256 and size
+// Coming games have no index: their pages are built from the registry alone.
 // Runs in CI only unless --force is given; locally the site builds from sample-data/.
 // Any failure stops the build, so a broken fetch never publishes a half-empty site.
 import fs from 'node:fs';
@@ -36,13 +39,12 @@ async function read(src, { optional = false } = {}) {
   return fs.readFileSync(f);
 }
 const save = (rel, bytes) => { const f = path.join(tmp, rel); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, bytes); };
-const safe = (rel) => { if (rel.includes('..') || path.isAbsolute(rel) || rel.includes('\\')) throw new Error(`unsafe path ${rel}`); return rel; };
 
 if (!sources.registry) throw new Error('fetch-data: site-config/sources.json has no registry source yet');
 const registryBytes = await read(sources.registry);
 const registry = JSON.parse(registryBytes.toString('utf8'));
 save('registry.json', registryBytes);
-// The signature is required; the build's signature check says so if it's missing.
+// The signatures are required; the build's signature check says so if one is missing.
 const registrySig = await read(sources.registry + '.sig', { optional: true });
 if (registrySig) save('registry.json.sig', registrySig);
 
@@ -50,23 +52,18 @@ const creditsBytes = sources.credits && await read(sources.credits, { optional: 
 if (creditsBytes) save('credits.json', creditsBytes);
 
 for (const g of registry.games) {
-  const base = sources.games[g.id];
-  if (!base) {
-    if (g.status !== 'coming') throw new Error(`fetch-data: ${g.id} is ${g.status} but has no source in sources.json`);
-    continue; // a coming game with no public repo yet: the page is built from the registry alone
-  }
+  if (g.status === 'coming') continue;
+  if (!g.index) throw new Error(`fetch-data: ${g.id} is ${g.status} but the registry gives it no index`);
   const dir = `games/${g.id}`;
-  if (g.status !== 'coming') {
-    save(`${dir}/index.json`, await read(base + 'index.json'));
-    const sig = await read(base + 'index.json.sig', { optional: true });
-    if (sig) save(`${dir}/index.json.sig`, sig);
-  }
-  const info = await read(base + 'game.json', { optional: true });
-  if (!info) continue;
-  save(`${dir}/game.json`, info);
-  const files = new Set(JSON.parse(info.toString('utf8')).media?.flatMap((m) => [m.file, m.poster]).filter(Boolean));
-  for (const f of files) save(`${dir}/${safe(f)}`, await read(base + f));
-  console.log(`fetch-data: ${g.id}: ${files.size} media file(s)`);
+  const indexBytes = await read(g.index);
+  save(`${dir}/index.json`, indexBytes);
+  const sig = await read(g.index + '.sig', { optional: true });
+  if (sig) save(`${dir}/index.json.sig`, sig);
+  const data = JSON.parse(indexBytes.toString('utf8')).data;
+  if (!data) { console.log(`fetch-data: ${g.id}: its index has no data zip yet`); continue; }
+  const zip = await get(data.url);
+  save(`${dir}/${g.id}-data.zip`, zip);
+  console.log(`fetch-data: ${g.id}: data zip of ${data.date}, ${(zip.length / 1048576).toFixed(1)} MB`);
 }
 
 fs.rmSync(out, { recursive: true, force: true });

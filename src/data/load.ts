@@ -3,8 +3,10 @@
 // The data folder (DVR_DATA_DIR, else `data/` if it exists, else `sample-data/`):
 //   registry.json (+ .sig)            the registry the app reads (from registry/ in this repo)
 //   games/<id>/index.json (+ .sig)    a game's index, served byte for byte
-//   games/<id>/game.json              page text: tagline, description, requirements, controls, media
-//   games/<id>/media/*                our own images and videos, named in game.json
+//   games/<id>/<id>-data.zip          the game's data zip (dvr-package SPEC section 11): its line, text,
+//                                     known issues, credits and media; checked against the index's data
+//                                     sha256 and size, read in memory, never unpacked to disk
+//   games/<id>/game.json + media/*    older data from before the data zip (only when the index has no data)
 //   credits.json                      the project's credits (from the installer repo; optional)
 // In CI, scripts/fetch-data.mjs fills `data/` from the public repos before the build.
 // Formats are owned by the installer repo; this file only reads them, never rewrites them.
@@ -53,6 +55,12 @@ export interface KnownIssue { id: string; title: string; text: string; severity?
 export interface GameIndex {
   format: number; id: string; name: string; game: string; appid: number; description?: string;
   releases: Release[]; knownIssues?: KnownIssue[];
+  data?: { url: string; sha256: string; size: number; date: string };   // the game's data zip
+}
+/** data.json in a game's data zip. */
+interface GameData {
+  format: number; id: string; line: string; firstLaunch?: string; needToKnow?: string[];
+  knownIssues?: KnownIssue[]; owners?: { developer: string; publisher: string }; credits?: Credit[]; media?: Media[];
 }
 
 export interface Control { input: string; action: string; primary?: boolean }
@@ -80,7 +88,7 @@ export interface Game extends RegistryGame {
   set?: string;
   setInfo?: SetInfo;
   index?: GameIndex;   // released and beta games only
-  info?: GameInfo;     // game.json, when the game repo has one (coming games may too)
+  info?: GameInfo;     // from the data zip (or an older game.json)
   tagline?: string;
   latestStable?: Release;
   latestBeta?: Release;  // the newest open beta, only when it's newer than the latest stable
@@ -128,8 +136,15 @@ export const rawIndex = (id: string) => fs.readFileSync(file('games', id, 'index
 /** A signature file's exact bytes, or undefined when there is none (sample data is unsigned). */
 export const rawSig = (...rel: string[]) => { const f = file(...rel); return fs.existsSync(f) ? fs.readFileSync(f) : undefined; };
 
-/** A media file named in game.json, as bytes. */
-export const mediaPath = (id: string, rel: string) => file('games', id, rel);
+/** Each game's data zip files (name -> bytes), once read and checked. */
+const zipFiles = new Map<string, Map<string, Buffer>>();
+/** A media file a game's data names ("media/<file>"), as bytes: from its data zip, or (older data) from disk. */
+export function mediaBytes(id: string, rel: string): Buffer {
+  load();
+  const files = zipFiles.get(id);
+  if (files) return files.get(rel) ?? fail(`${id}'s data zip has no ${rel}`);
+  return fs.readFileSync(file('games', id, rel));
+}
 
 const KNOWN_FORMAT = 1;
 const ID = /^[a-z0-9-]+$/;
@@ -166,18 +181,34 @@ export function load() {
     const index = hasIndex ? readChecked<GameIndex>(path.join(dir, 'index.json'), 'index') : undefined;
     if (index && index.format > KNOWN_FORMAT) fail(`${g.id}/index.json is format ${index.format}`);
     if (index && index.id !== g.id) fail(`${g.id}/index.json says its id is "${index.id}"`);
-    const info = fs.existsSync(path.join(dir, 'game.json')) ? readChecked<GameInfo>(path.join(dir, 'game.json'), 'game') : undefined;
-    if (fs.existsSync(path.join(dir, 'known-issues.json'))) readChecked(path.join(dir, 'known-issues.json'), 'known-issues');
-    for (const m of info?.media ?? []) {
-      if (m.file.includes('..') || path.isAbsolute(m.file)) fail(`${g.id}/game.json media path "${m.file}"`);
-      if (!fs.existsSync(path.join(dir, m.file))) fail(`${g.id}/game.json names ${m.file}, which isn't there`);
+    let info: GameInfo | undefined;
+    let knownIssues = index?.knownIssues;
+    if (index?.data) {
+      // The data zip: dvr-package checks its size and SHA-256 against the index (whose signature
+      // is checked below), then its names, data.json and every file, in plain Node.
+      const zip = path.join(dir, `${g.id}-data.zip`);
+      if (!fs.existsSync(zip)) fail(`${g.id}'s index names a data zip, but ${path.relative(root, zip)} isn't there (did fetch-data run?)`);
+      let read: { data: GameData; files: Map<string, Buffer> };
+      try { read = dvrPackage.dataZip.read(zip, { sha256: index.data.sha256, size: index.data.size, id: g.id }); }
+      catch (e) { return fail(`${g.id}'s data zip: ${(e as Error).message}`); }
+      zipFiles.set(g.id, read.files);
+      const d = read.data;
+      info = { id: g.id, tagline: d.line, firstLaunch: d.firstLaunch, needToKnow: d.needToKnow, credits: d.credits, owners: d.owners, media: d.media };
+      if (d.knownIssues) knownIssues = d.knownIssues;
+    } else if (fs.existsSync(path.join(dir, 'game.json'))) {
+      info = readChecked<GameInfo>(path.join(dir, 'game.json'), 'game');
+      if (fs.existsSync(path.join(dir, 'known-issues.json'))) readChecked(path.join(dir, 'known-issues.json'), 'known-issues');
+      for (const m of info.media ?? []) {
+        if (m.file.includes('..') || path.isAbsolute(m.file)) fail(`${g.id}/game.json media path "${m.file}"`);
+        if (!fs.existsSync(path.join(dir, m.file))) fail(`${g.id}/game.json names ${m.file}, which isn't there`);
+      }
     }
 
     const releases = (index?.releases ?? []).map((r) => ({ ...r, maturity: maturity(r, g.id) })).sort(byNewest);
     const latestStable = releases.find((r) => r.maturity === 'stable');
     const beta = releases.find((r) => r.maturity === 'open-beta');
     const latestBeta = beta && (!latestStable || newer(beta, latestStable)) ? beta : undefined;
-    const openIssues = (index?.knownIssues ?? []).filter((i) => !i.fixedIn)
+    const openIssues = (knownIssues ?? []).filter((i) => !i.fixedIn)
       .sort((a, b) => (SEVERITY_ORDER[a.severity ?? 'minor'] ?? 2) - (SEVERITY_ORDER[b.severity ?? 'minor'] ?? 2));
     const owners = [info?.owners?.developer, info?.owners?.publisher].filter((o, i, all): o is string => !!o && all.indexOf(o) === i);
 
