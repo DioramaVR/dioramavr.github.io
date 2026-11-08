@@ -14,7 +14,6 @@
 //   credits.json                      the project's credits (from the installer repo; optional)
 // In CI, scripts/fetch-data.mjs fills `data/` from the public repos before the build.
 // Formats are owned by the installer repo; this file only reads them, never rewrites them.
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import dvrPackage from 'dvr-package';   // the formats' JSON Schemas (github.com/DioramaVR/dvr-package)
@@ -161,22 +160,20 @@ export function mediaBytes(id: string, rel: string): Buffer {
 const ASSET_NAME = /^[a-z0-9][a-z0-9._-]*$/;
 /** Reads every file of a game's assets list from games/<id>/media/ and checks it against the index
  *  (whose signature is checked too): the same size and SHA-256, or the build stops. */
-function readAssets(id: string, dir: string, assets: Assets): { media: Media[]; files: Map<string, Buffer> } {
-  const named = new Set<string>();
-  for (const m of assets.media) for (const f of [m.file, m.poster, ...(m.sources ?? [])]) if (f) named.add(f);
-  const listed = Object.keys(assets.files);
-  for (const f of named) if (!assets.files[f]) fail(`${id}'s assets list uses ${f} but has no url, sha256 and size for it`);
-  for (const f of listed) if (!named.has(f)) fail(`${id}'s assets list has ${f}, which no media entry uses`);
+function readAssets(id: string, dir: string, index: GameIndex & { assets: Assets }): { media: Media[]; files: Map<string, Buffer> } {
+  const { assets } = index;
+  // dvr-package's rules: media's roles and kinds, and files covering exactly the names media uses.
+  const problems: { path: string; message: string }[] = dvrPackage.gameAssets.assetsProblems(assets);
+  if (problems.length) fail(`${id}'s assets list:\n  ${problems.map((e) => `${e.path} ${e.message}`).join('\n  ')}`);
   const files = new Map<string, Buffer>();
-  for (const name of listed) {
+  for (const name of Object.keys(assets.files)) {
+    // Flat names only, so a file is never read from outside the game's media folder.
     if (!ASSET_NAME.test(name)) fail(`${id}'s assets list has a file name "${name}" outside [a-z0-9._-]`);
-    const want = assets.files[name];
     const p = path.join(dir, 'media', name);
     if (!fs.existsSync(p)) fail(`${id}'s assets list names ${name}, but ${path.relative(root, p)} isn't there (did fetch-data run?)`);
     const bytes = fs.readFileSync(p);
-    if (bytes.length !== want.size) fail(`${id}'s ${name} is ${bytes.length} bytes, not the ${want.size} its index lists`);
-    const sha = crypto.createHash('sha256').update(bytes).digest('hex');
-    if (sha !== want.sha256.toLowerCase()) fail(`${id}'s ${name} has SHA-256 ${sha}, not the ${want.sha256.toLowerCase()} its index lists`);
+    try { dvrPackage.gameAssets.verify(name, bytes, index); }   // the size and SHA-256 its signed index lists
+    catch (e) { fail(`${id}'s assets: ${(e as Error).message}`); }
     files.set(`media/${name}`, bytes);
   }
   // The pages use "media/<file>" paths, as in the data zip.
@@ -244,7 +241,7 @@ export function load() {
     }
     if (index?.assets) {
       // The assets list wins over the data zip's (or game.json's) media; the text stays where it is.
-      const a = readAssets(g.id, dir, index.assets);
+      const a = readAssets(g.id, dir, index as GameIndex & { assets: Assets });
       mediaFiles.set(g.id, a.files);
       info = { ...(info ?? { id: g.id }), media: a.media };
     }
