@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Smoke from '../components/Smoke.astro';
 import { gamesBySet, installer, pickMedia, mediaUrl, fmtSize, setLabel, statusLabel, type Game } from '../data/load';
-import { PATREON, PITCH } from '../site';
+import { PATREON, PITCH, INSTALLER_URL } from '../site';
 
 const { latest, latestVersion } = installer();
 const { grouped, alone } = gamesBySet();
@@ -26,7 +26,7 @@ const card = (g: Game) => {
         <p class="pitch">{PITCH}</p>
         {latestVersion ? (
           <>
-            <a class="btn btn-primary btn-big" href={latest?.url ?? '/download/'}>
+            <a class="btn btn-primary btn-big" href={INSTALLER_URL}>
               <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>
               Download the installer
             </a>
@@ -35,7 +35,6 @@ const card = (g: Game) => {
         ) : (
           <>
             <a class="btn btn-primary btn-big" href={PATREON}>Get the closed beta on Patreon</a>
-            <p class="small meta">The free installer comes with the first public release.</p>
           </>
         )}
         <p class="small phone-note">On your phone? This runs on your PC: bookmark it for later.</p>
@@ -46,8 +45,7 @@ const card = (g: Game) => {
 
   <main id="content">
     <section id="games" class="wrap section" aria-labelledby="games-title" style="padding-top: 40px">
-      <h2 id="games-title" class="section-title">Games</h2>
-      <p class="lede" style="margin-bottom: 44px">A curated collection of mods, each one built for the diorama style. New games arrive in waves.</p>
+      <h2 id="games-title" class="section-title" style="margin-bottom: 36px">Games</h2>
 
       {sections.map((s) => {
         const games = s.games.map(card);
@@ -106,24 +104,24 @@ const card = (g: Game) => {
           <li>
             <span class="n" aria-hidden="true">1</span>
             <h3>Install</h3>
-            <p>Download the DioramaVR installer and run it. It finds the supported games in your Steam library.</p>
-            <p class="small">Windows may warn you about a new app first. <a href="/download/#smartscreen">What to do</a></p>
+            <p>Download the installer and run it.</p>
+            <p class="small">Windows may warn you first. <a href="/download/#smartscreen">What to do</a></p>
           </li>
           <li>
             <span class="n" aria-hidden="true">2</span>
             <h3>Pick a game</h3>
-            <p>Choose one and press Install. The installer downloads the latest version of the mod for you, and keeps it up to date. Uninstalling puts the game back to normal; your saves are never touched.</p>
+            <p>Press Install. Uninstall puts the game back as it was.</p>
           </li>
           <li>
             <span class="n" aria-hidden="true">3</span>
-            <h3>Put on the headset</h3>
-            <p>Load a save as usual and play your game as a diorama in front of you.</p>
+            <h3>Play</h3>
+            <p>Start the game and put on your headset.</p>
           </li>
         </ol>
 
         <div class="needs">
           <h3>What you need</h3>
-          <p class="lead">These are <b>PC VR</b> mods. The game runs on your Windows PC and streams to your headset.</p>
+          <p class="lead"><b>PC VR</b>: the game runs on your PC and streams to the headset.</p>
           <div class="flow">
             <div class="item">
               <svg aria-hidden="true" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#edda4b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg>
@@ -137,7 +135,6 @@ const card = (g: Game) => {
               <div><div class="h">A headset that works with SteamVR</div><div class="s">Quest over Link, Air Link or Virtual Desktop; Index, Vive, Pico and others</div></div>
             </div>
           </div>
-          <p class="small foot">A headset can’t run these on its own: the PC does the work.</p>
         </div>
       </div>
     </section>
@@ -146,7 +143,7 @@ const card = (g: Game) => {
       <div class="patreon">
         <div>
           <h2 id="patreon-title">Support the project</h2>
-          <p>Patrons get testing builds of the next wave every month, so you play the new games before anyone else. Every released mod stays free and open source.</p>
+          <p>Patrons test the next wave early. Released mods stay free.</p>
         </div>
         <a class="btn btn-primary btn-l flat" href={PATREON}>Join on Patreon</a>
       </div>
