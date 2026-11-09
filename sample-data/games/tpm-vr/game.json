@@ -197,10 +197,28 @@
   ],
   "media": [
     {
-      "file": "media/hero.jpg",
+      "file": "media/museum-overview.jpg",
       "kind": "image",
       "role": "hero",
-      "alt": "A museum hall on the table in VR: guests queue past a frozen mammoth and a dinosaur skeleton, with the game's menus floating at the edge of the table."
+      "alt": "A busy prehistory hall from above: guests crowd round fossils and a dinosaur skeleton, with the city and glasshouses behind."
+    },
+    {
+      "file": "media/build-menu.jpg",
+      "kind": "image",
+      "role": "gallery",
+      "alt": "The game's build menu floating in VR beside the museum, with the objectives and stats panels further off."
+    },
+    {
+      "file": "media/frozen-caveman.jpg",
+      "kind": "image",
+      "role": "gallery",
+      "alt": "Up close in the headset: a caveman frozen in an ice block, with guests taking photos next to it."
+    },
+    {
+      "file": "media/museum-on-table.jpg",
+      "kind": "image",
+      "role": "gallery",
+      "alt": "A hall of the museum as a small diorama on the table, frozen exhibits and all."
     },
     {
       "file": "media/turntable-720.webm",
@@ -214,18 +232,6 @@
       "kind": "video",
       "role": "hover",
       "alt": "A museum captured as a 3D model, turning slowly."
-    },
-    {
-      "file": "media/headset-view.jpg",
-      "kind": "image",
-      "role": "gallery",
-      "alt": "The same hall as seen in the headset, with the build toolbar and the laser pointer."
-    },
-    {
-      "file": "media/windows-around-table.jpg",
-      "kind": "image",
-      "role": "gallery",
-      "alt": "The museum grounds on the table with the game's windows arranged around it and the camera keys floating on the left."
     }
   ],
   "mediaGaps": [

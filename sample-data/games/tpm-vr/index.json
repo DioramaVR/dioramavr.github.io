@@ -93,10 +93,25 @@
     "release": "assets-1",
     "date": "2026-11-08",
     "files": {
-      "hero.jpg": {
-        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/hero.jpg",
-        "sha256": "bc1131f2f8f349fdb6782b86aa61268a58eba1e3e2be50ddbde71707daea20f5",
-        "size": 280729
+      "museum-overview.jpg": {
+        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/museum-overview.jpg",
+        "sha256": "9fa5c6b1b5c7bb302ea17b3737c49bb29cbccf1ffc447652c6e2a11606cb1f44",
+        "size": 182877
+      },
+      "build-menu.jpg": {
+        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/build-menu.jpg",
+        "sha256": "ed73697d94110dc745cf2e1d9e0c28a317495ad53d043ff4faa4fdd39da42728",
+        "size": 186758
+      },
+      "frozen-caveman.jpg": {
+        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/frozen-caveman.jpg",
+        "sha256": "2d6b42888093300cdde3ac6bcec8009ffe8750c860e3eef4bd610d70d5ea93cb",
+        "size": 105165
+      },
+      "museum-on-table.jpg": {
+        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/museum-on-table.jpg",
+        "sha256": "3f0514c6c771ce2d981e0808b581a9ec2ded9b4213dbd05b87c01de9b7036735",
+        "size": 80021
       },
       "turntable-720.webm": {
         "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/turntable-720.webm",
@@ -107,24 +122,32 @@
         "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/turntable-poster.jpg",
         "sha256": "aa6ad72a8eea93a88d458defc9116f261f5472068478ad5b260a46f5474a1ea8",
         "size": 81371
-      },
-      "headset-view.jpg": {
-        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/headset-view.jpg",
-        "sha256": "553570464406e08e0e8626ffe3c9bd4a51706b583a66dfc5f575cb6da4661699",
-        "size": 373387
-      },
-      "windows-around-table.jpg": {
-        "url": "https://github.com/DioramaVR/tpm-vr-public/releases/download/assets-1/windows-around-table.jpg",
-        "sha256": "7685c1db95bba856124f28287ad718bd75dd8621ffd1bc516cf8e15e82f3729a",
-        "size": 573121
       }
     },
     "media": [
       {
-        "file": "hero.jpg",
+        "file": "museum-overview.jpg",
         "kind": "image",
         "role": "hero",
-        "alt": "A museum hall on the table in VR: guests queue past a frozen mammoth and a dinosaur skeleton, with the game's menus floating at the edge of the table."
+        "alt": "A busy prehistory hall from above: guests crowd round fossils and a dinosaur skeleton, with the city and glasshouses behind."
+      },
+      {
+        "file": "build-menu.jpg",
+        "kind": "image",
+        "role": "gallery",
+        "alt": "The game's build menu floating in VR beside the museum, with the objectives and stats panels further off."
+      },
+      {
+        "file": "frozen-caveman.jpg",
+        "kind": "image",
+        "role": "gallery",
+        "alt": "Up close in the headset: a caveman frozen in an ice block, with guests taking photos next to it."
+      },
+      {
+        "file": "museum-on-table.jpg",
+        "kind": "image",
+        "role": "gallery",
+        "alt": "A hall of the museum as a small diorama on the table, frozen exhibits and all."
       },
       {
         "file": "turntable-720.webm",
@@ -132,18 +155,6 @@
         "role": "turntable",
         "alt": "A museum captured as a 3D model, turning slowly on a turntable.",
         "poster": "turntable-poster.jpg"
-      },
-      {
-        "file": "headset-view.jpg",
-        "kind": "image",
-        "role": "gallery",
-        "alt": "The same hall as seen in the headset, with the build toolbar and the laser pointer."
-      },
-      {
-        "file": "windows-around-table.jpg",
-        "kind": "image",
-        "role": "gallery",
-        "alt": "The museum grounds on the table with the game's windows arranged around it and the camera keys floating on the left."
       }
     ]
   }
