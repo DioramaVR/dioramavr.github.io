@@ -5,7 +5,7 @@ import Header from '../../components/Header.astro';
 import Smoke from '../../components/Smoke.astro';
 import Credits from '../../components/Credits.astro';
 import { load, installer, pickMedia, mediaUrl, fmtDate, fmtSize, setLabel, maturityLabel, severityLabel, type Game } from '../../data/load';
-import { PATREON, CONTROLS, INSTALLER_URL } from '../../site';
+import { PATREON, MENU_CONTROL, INSTALLER_URL } from '../../site';
 
 export function getStaticPaths() {
   return load().games.map((game) => ({ params: { game: game.id }, props: { game } }));
@@ -108,8 +108,11 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
         <div class="wrap section">
           <div class="one-control">
             <div class="text">
-              <h2 id="controls-title">Controls</h2>
-              <p>{CONTROLS}</p>
+              <h2 id="controls-title">The one control to know</h2>
+              <p>{MENU_CONTROL.action}</p>
+            </div>
+            <div class="keys" role="img" aria-label={MENU_CONTROL.keys.join(' + ')}>
+              {MENU_CONTROL.keys.map((k, i) => <>{i > 0 && <span class="plus" aria-hidden="true">+</span>}<span class="key">{k}</span></>)}
             </div>
           </div>
         </div>
