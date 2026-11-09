@@ -96,14 +96,6 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
     </div>
 
     <main id="content">
-      {pictures.length > 0 && (
-        <section class="wrap section" aria-label="Pictures" style="padding-top: 24px">
-          <div class="pictures">
-            {pictures.map((m) => <img src={media(m.file)} alt={m.alt} loading="lazy" width="1200" height="900">)}
-          </div>
-        </section>
-      )}
-
       <section class="section-deep" aria-labelledby="controls-title">
         <div class="wrap section">
           <div class="one-control">
@@ -117,6 +109,14 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
           </div>
         </div>
       </section>
+
+      {pictures.length > 0 && (
+        <section class="wrap section" aria-label="Pictures" style="padding-bottom: 0">
+          <div class="pictures">
+            {pictures.map((m) => <img src={media(m.file)} alt={m.alt} loading="lazy" width="1200" height="900">)}
+          </div>
+        </section>
+      )}
 
       {(goodToKnow.length > 0 || info?.firstLaunch) && (
         <section class="wrap section" aria-labelledby="know-title" style="padding-bottom: 0">
