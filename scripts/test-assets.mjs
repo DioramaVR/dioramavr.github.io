@@ -40,23 +40,23 @@ function expect(name, edit, want) {
 
 expect('the sample assets list checks out', () => {}, null);
 expect('a file with other bytes (same size)', ({ media }) => {
-  const f = path.join(media, 'hero.jpg'); const b = fs.readFileSync(f); b[b.length - 1] ^= 1; fs.writeFileSync(f, b);
+  const f = path.join(media, 'museum-overview.jpg'); const b = fs.readFileSync(f); b[b.length - 1] ^= 1; fs.writeFileSync(f, b);
 }, "SHA-256 is");
-expect('a file of another size', ({ media }) => fs.appendFileSync(path.join(media, 'hero.jpg'), 'x'), 'bytes, not the');
-expect('a missing file', ({ media }) => fs.rmSync(path.join(media, 'headset-view.jpg')), "isn't there");
+expect('a file of another size', ({ media }) => fs.appendFileSync(path.join(media, 'museum-overview.jpg'), 'x'), 'bytes, not the');
+expect('a missing file', ({ media }) => fs.rmSync(path.join(media, 'frozen-caveman.jpg')), "isn't there");
 expect('a name the media list uses but files lacks', ({ index }) => { delete index.assets.files['turntable-poster.jpg']; }, 'has no entry for turntable-poster.jpg');
-expect('a file no media entry uses', ({ index }) => { index.assets.files['extra.jpg'] = index.assets.files['hero.jpg']; }, "extra.jpg isn't used by media");
+expect('a file no media entry uses', ({ index }) => { index.assets.files['extra.jpg'] = index.assets.files['museum-overview.jpg']; }, "extra.jpg isn't used by media");
 // dvr-package's index schema refuses it first; load.ts checks the names again before reading a file.
 expect('a file name with a path in it', ({ index }) => {
-  index.assets.files['../hero.jpg'] = index.assets.files['hero.jpg']; index.assets.media[0].file = '../hero.jpg'; delete index.assets.files['hero.jpg'];
+  index.assets.files['../museum-overview.jpg'] = index.assets.files['museum-overview.jpg']; index.assets.media[0].file = '../museum-overview.jpg'; delete index.assets.files['museum-overview.jpg'];
 }, "doesn't match dvr-package's index schema");
 expect('an upper-case sha256 is fine', ({ index }) => { for (const f of Object.values(index.assets.files)) f.sha256 = f.sha256.toUpperCase(); }, null);
 expect('the assets list wins over game.json media', ({ index, media }) => {
-  fs.copyFileSync(path.join(media, 'hero.jpg'), path.join(media, 'new-hero.jpg'));
-  index.assets.files['new-hero.jpg'] = { ...index.assets.files['hero.jpg'] };
-  delete index.assets.files['hero.jpg'];
+  fs.copyFileSync(path.join(media, 'museum-overview.jpg'), path.join(media, 'new-hero.jpg'));
+  index.assets.files['new-hero.jpg'] = { ...index.assets.files['museum-overview.jpg'] };
+  delete index.assets.files['museum-overview.jpg'];
   index.assets.media[0].file = 'new-hero.jpg';
-  fs.rmSync(path.join(media, 'hero.jpg'));   // game.json still names media/hero.jpg
+  fs.rmSync(path.join(media, 'museum-overview.jpg'));   // game.json still names media/museum-overview.jpg
 }, null);
 
 console.log(failed ? `${failed} assets test(s) failed` : 'all assets tests passed');
