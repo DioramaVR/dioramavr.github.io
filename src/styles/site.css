@@ -459,8 +459,10 @@ code { font-family: var(--font-mono); }
 
 /* ---------- Game pictures, closed beta install ---------- */
 
-.hero-still { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-l); }
-.hero-still + .gallery { margin-top: 24px; }
+/* A game's pictures: up to four, two by two, near square (4:3); one across on narrow phones. */
+.pictures { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.pictures img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-l); }
+@media (max-width: 480px) { .pictures { grid-template-columns: minmax(0, 1fr); gap: 16px; } }
 .closed-install { width: 100%; margin-top: 16px; padding: 28px 32px; border-radius: var(--radius-l); background: rgba(24, 26, 37, .85); border: 1.5px dashed rgba(245, 240, 232, .22); text-align: left; display: flex; flex-direction: column; gap: 8px; }
 .closed-install h2 { font-size: 24px; }
 .closed-install p { color: var(--text-2); }

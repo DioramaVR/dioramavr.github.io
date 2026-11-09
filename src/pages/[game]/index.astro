@@ -16,6 +16,8 @@ const info = game.info;
 const { hero, turntable, turntableSources, gallery } = pickMedia(info);
 const { latestVersion } = installer();
 const media = (rel: string) => mediaUrl(game.id, rel);
+// One grid of pictures, two by two: the hero first, then the rest.
+const pictures = [hero, ...gallery].filter((m) => m !== undefined).slice(0, 4);
 const goodToKnow = [...(info?.needToKnow ?? []), ...(info?.requirements ?? [])];
 const releases = game.index?.releases ?? [];
 const coming = game.status === 'coming';
@@ -94,14 +96,11 @@ const description = game.tagline ?? `${game.name}: a DioramaVR mod for ${game.ga
     </div>
 
     <main id="content">
-      {(hero || gallery.length > 0) && (
+      {pictures.length > 0 && (
         <section class="wrap section" aria-label="Pictures" style="padding-top: 24px">
-          {hero && <img class="hero-still" src={media(hero.file)} alt={hero.alt} loading="lazy" width="1920" height="1080">}
-          {gallery.length > 0 && (
-            <div class="gallery">
-              {gallery.map((m) => <img src={media(m.file)} alt={m.alt} loading="lazy" width="960" height="540">)}
-            </div>
-          )}
+          <div class="pictures">
+            {pictures.map((m) => <img src={media(m.file)} alt={m.alt} loading="lazy" width="1200" height="900">)}
+          </div>
         </section>
       )}
 
