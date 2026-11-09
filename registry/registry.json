@@ -3,12 +3,12 @@
   "waves": [
     {
       "id": "test",
-      "name": "Test wave",
+      "name": "First mod release",
       "status": "open-beta"
     },
     {
       "id": "1",
-      "name": "Wave 1",
+      "name": "Timber Door against the Catalysm Storm",
       "status": "coming"
     }
   ],
@@ -24,6 +24,14 @@
       "index": "https://raw.githubusercontent.com/DioramaVR/tpm-vr-public/main/data/index.json"
     },
     {
+      "id": "timberborn-vr",
+      "name": "Timberborn VR",
+      "game": "Timberborn",
+      "appid": 1062090,
+      "status": "coming",
+      "wave": "1"
+    },
+    {
       "id": "deathsdoor-vr",
       "name": "Death's Door VR",
       "game": "Death's Door",
@@ -36,6 +44,14 @@
       "name": "Cataclismo VR",
       "game": "Cataclismo",
       "appid": 1422440,
+      "status": "coming",
+      "wave": "1"
+    },
+    {
+      "id": "ats-vr",
+      "name": "Against the Storm VR",
+      "game": "Against the Storm",
+      "appid": 1336490,
       "status": "coming",
       "wave": "1"
     }
