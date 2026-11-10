@@ -59,6 +59,13 @@
   "app": {
     "releases": [
       {
+        "version": "0.4.0",
+        "date": "2026-11-10",
+        "url": "https://github.com/DioramaVR/dvr-installer-public/releases/download/v0.4.0/DioramaVR-0.4.0.exe",
+        "size": 74464811,
+        "sha256": "B9D0B0649F4EE433C22B6F05F4D8000657C44CAC5C53E304CC8204F376E55E9C"
+      },
+      {
         "version": "0.3.0",
         "date": "2026-11-08",
         "url": "https://github.com/DioramaVR/dvr-installer-public/releases/download/v0.3.0/DioramaVR-0.3.0.exe",
@@ -66,6 +73,6 @@
         "sha256": "9600FE83B09783E3501D51F8375F47C4B222C97AE445581AD55DBE8EC880795A"
       }
     ],
-    "latest": "0.3.0"
+    "latest": "0.4.0"
   }
 }
