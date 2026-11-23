@@ -21,6 +21,11 @@ on:
   schedule:
     - cron: "17 3 * * *"
   workflow_dispatch:
+    inputs:
+      announce:
+        description: "Discord: post new releases (off: only show what would be posted)"
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -63,6 +68,14 @@ jobs:
       - uses: withastro/action@v6.1.4
         with:
           node-version: "24"
+      # The registry and indexes this build checked and shows, for the announce job.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-data
+          path: |
+            data/registry.json
+            data/games/*/index.json
+          retention-days: 7
 
   deploy:
     needs: build
@@ -73,3 +86,57 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5.0.1
+
+  # Discord: one message for each public release (open-beta or stable game release, or an
+  # installer release) the site now shows that hasn't been announced yet, after it's live.
+  # scripts/announce.mjs decides; what's been announced is kept in announced.json on the
+  # discord-announced branch (no site code there), saved before anything is posted, so a
+  # release is never posted twice. Closed betas never reach an index, and data-only
+  # publishes, dry runs and failed runs add no release, so none of them announce.
+  # Without the DISCORD_WEBHOOK_URL secret, or with announce off, it only shows the messages.
+  announce:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # the discord-announced branch only
+    env:
+      PREVIEW: ${{ github.event.inputs.announce == 'false' && '--preview' || '' }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          sparse-checkout: scripts
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-data
+          path: data
+      - name: What's been announced
+        run: |
+          mkdir -p state
+          if git fetch -q --depth 1 origin discord-announced 2>/dev/null; then
+            git show FETCH_HEAD:announced.json > state/announced.json
+            git rev-parse FETCH_HEAD > state/parent
+          fi
+      - name: Decide
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/announce.mjs releases --data data --state state/announced.json --out state/messages.json
+      - name: Save what's announced (before posting)
+        if: env.PREVIEW == ''
+        run: |
+          if [ -f state/parent ] && git show "$(cat state/parent):announced.json" | cmp -s - state/announced.json; then
+            echo "nothing new to save"; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          blob=$(git hash-object -w state/announced.json)
+          tree=$(printf '100644 blob %s\tannounced.json\n' "$blob" | git mktree)
+          parent=(); [ -f state/parent ] && parent=(-p "$(cat state/parent)")
+          commit=$(git commit-tree "$tree" "${parent[@]}" -m "Announced on Discord (deploy run $GITHUB_RUN_ID)")
+          git push -q origin "$commit:refs/heads/discord-announced"
+      - name: Post
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: node scripts/announce.mjs send --messages state/messages.json $PREVIEW
