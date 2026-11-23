@@ -1,0 +1,48 @@
+# Posts one message to the DioramaVR Discord by hand (the channel of the DISCORD_WEBHOOK_URL
+# secret). Starts as a preview: the run's log shows the exact message and nothing is posted;
+# untick "Preview only" to post. No message can ping anyone (@everyone and the like are off).
+# Releases are announced by themselves after each deploy (deploy.yml's announce job).
+name: Announce on Discord
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "Title (shown in bold)"
+        required: true
+        type: string
+      message:
+        description: 'Message. Type \n for a new line'
+        required: false
+        type: string
+      link:
+        description: "Link (optional, https://...)"
+        required: false
+        type: string
+      preview_only:
+        description: "Preview only: show the message, post nothing"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  announce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          sparse-checkout: scripts
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Announce
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          TITLE: ${{ inputs.title }}
+          MESSAGE: ${{ inputs.message }}
+          LINK: ${{ inputs.link }}
+          # Posting only from main, so a branch can't change what's sent.
+          PREVIEW: ${{ (inputs.preview_only || github.ref != 'refs/heads/main') && '--preview' || '' }}
+        run: node scripts/announce.mjs manual --title "$TITLE" --message "$MESSAGE" --link "$LINK" $PREVIEW
