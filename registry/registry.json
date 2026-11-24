@@ -44,8 +44,9 @@
       "name": "Cataclismo VR",
       "game": "Cataclismo",
       "appid": 1422440,
-      "status": "coming",
-      "wave": "1"
+      "status": "open-beta",
+      "wave": "1",
+      "index": "https://raw.githubusercontent.com/DioramaVR/cataclismo-vr-public/main/data/index.json"
     },
     {
       "id": "ats-vr",
